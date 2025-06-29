@@ -1,4 +1,31 @@
 package com.eduardoxduardo.vlibrary.model;
+import jakarta.persistence.*;
+import lombok.*;
 
-public class Genre {
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Set;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString(exclude = "books")
+@EqualsAndHashCode(of = "id")
+@Entity
+@Table(name = "genres")
+public class Genre implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String name;
+
+    @ManyToMany(mappedBy = "genres")
+    private Set<Book> books;
 }
