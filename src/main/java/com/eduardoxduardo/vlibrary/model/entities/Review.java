@@ -23,7 +23,7 @@ public class Review implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int rating;
+    private Double rating;
     private String comment;
 
     @Column(name = "review_date")
@@ -33,7 +33,7 @@ public class Review implements Serializable {
     @JoinColumn(name = "user_book_id", nullable = false, unique = true)
     private UserBook userBook;
 
-    public Review(int rating, String comment, UserBook userBook) {
+    public Review(double rating, String comment, UserBook userBook) {
         this.rating = rating;
         this.comment = comment;
         this.reviewDate = LocalDate.now();

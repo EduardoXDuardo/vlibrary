@@ -12,7 +12,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-@ToString(exclude = {"userEntries", "genres"})
+@ToString(exclude = {"userEntries", "genres", "author"})
 @Entity
 @Table(name = "books")
 public class Book implements Serializable {
@@ -23,7 +23,11 @@ public class Book implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
-    private String author;
+    private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id", nullable = false)
+    private Author author;
 
     @OneToMany(mappedBy = "book")
     private Set<UserBook> userEntries;
@@ -36,7 +40,7 @@ public class Book implements Serializable {
     )
     private Set<Genre> genres;
 
-    public Book(String title, String author) {
+    public Book(String title, Author author) {
         this.title = title;
         this.author = author;
     }
