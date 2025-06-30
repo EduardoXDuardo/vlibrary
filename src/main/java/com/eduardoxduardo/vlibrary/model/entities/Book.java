@@ -1,4 +1,4 @@
-package com.eduardoxduardo.vlibrary.model;
+package com.eduardoxduardo.vlibrary.model.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,10 +11,10 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-@ToString(exclude = {"reviews"})
+@ToString(exclude = {"userEntries", "genres"})
 @Entity
+@Table(name = "books")
 public class Book implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -26,7 +26,7 @@ public class Book implements Serializable {
     private String author;
 
     @OneToMany(mappedBy = "book")
-    private List<Review> reviews;
+    private Set<UserBook> userEntries;
 
     @ManyToMany
     @JoinTable(
@@ -35,4 +35,9 @@ public class Book implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
     private Set<Genre> genres;
+
+    public Book(String title, String author) {
+        this.title = title;
+        this.author = author;
+    }
 }

@@ -1,17 +1,16 @@
-package com.eduardoxduardo.vlibrary.model;
+package com.eduardoxduardo.vlibrary.model.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@ToString(exclude = "reviews")
+@ToString(exclude = "library")
 @EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "users")
@@ -34,5 +33,11 @@ public class User implements Serializable {
     private String password;
 
     @OneToMany(mappedBy = "user")
-    private List<Review> reviews;
+    private Set<UserBook> library;
+
+    public User(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
 }

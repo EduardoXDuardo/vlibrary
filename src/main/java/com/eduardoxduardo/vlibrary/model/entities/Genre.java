@@ -1,4 +1,4 @@
-package com.eduardoxduardo.vlibrary.model;
+package com.eduardoxduardo.vlibrary.model.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,7 +9,6 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @ToString(exclude = "books")
 @EqualsAndHashCode(of = "id")
 @Entity
@@ -28,4 +27,8 @@ public class Genre implements Serializable {
 
     @ManyToMany(mappedBy = "genres")
     private Set<Book> books;
+
+    public Genre(String name) {
+        this.name = name;
+    }
 }
