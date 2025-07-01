@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReviewRegisterRequestDTO {
+public class ReviewCreateRequestDTO {
 
     @NotNull(message = "Book ID is required")
     private Long bookId;

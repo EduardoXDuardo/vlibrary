@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserBookRegisterRequestDTO {
+public class UserBookCreateRequestDTO {
 
     @NotNull(message = "Book ID is required")
     private Long bookId;

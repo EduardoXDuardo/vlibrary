@@ -7,6 +7,7 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -34,20 +35,14 @@ public class UserBook implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ReadingStatus status;
+    private ReadingStatus readingStatus;
 
-    @Column(name = "start_date")
-    private LocalDate readingStartDate;
+    @OneToMany(mappedBy = "userBook", cascade = CascadeType.ALL)
+    private List<Review> reviews;
 
-    @Column(name = "end_date")
-    private LocalDate readingEndDate;
-
-    @OneToOne(mappedBy = "userBook", cascade = CascadeType.ALL)
-    private Review review;
-
-    public UserBook(User user, Book book, ReadingStatus status) {
+    public UserBook(User user, Book book, ReadingStatus readingStatus) {
         this.user = user;
         this.book = book;
-        this.status = status;
+        this.readingStatus = readingStatus;
     }
 }
