@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
-    List<Book> findByAuthorId(Long authorId);
-    List<Book> findByGenreId(Long genreId);
+    List<Book> findAllByAuthorId(Long authorId);
+    List<Book> findAllByGenreId(Long genreId);
+    List<Book> findByTitleContainingIgnoreCase(String title);
 }

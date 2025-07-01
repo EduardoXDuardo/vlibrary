@@ -3,10 +3,11 @@ package com.eduardoxduardo.vlibrary.service;
 import com.eduardoxduardo.vlibrary.dto.request.BookCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.BookResponseDTO;
 import com.eduardoxduardo.vlibrary.dto.response.ReviewResponseDTO;
+import com.eduardoxduardo.vlibrary.dto.response.UserResponseDTO;
 import com.eduardoxduardo.vlibrary.mapper.BookMapper;
-import com.eduardoxduardo.vlibrary.model.entities.Author;
-import com.eduardoxduardo.vlibrary.model.entities.Book;
-import com.eduardoxduardo.vlibrary.model.entities.Genre;
+import com.eduardoxduardo.vlibrary.mapper.ReviewMapper;
+import com.eduardoxduardo.vlibrary.mapper.UserMapper;
+import com.eduardoxduardo.vlibrary.model.entities.*;
 import com.eduardoxduardo.vlibrary.repository.AuthorRepository;
 import com.eduardoxduardo.vlibrary.repository.BookRepository;
 import com.eduardoxduardo.vlibrary.repository.GenreRepository;
@@ -25,12 +26,16 @@ public class BookService {
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
     private final BookMapper bookMapper;
+    private final ReviewMapper reviewMapper;
+    private final UserMapper userMapper;
 
-    public BookService(BookRepository bookRepository, AuthorRepository authorRepository, GenreRepository genreRepository, BookMapper bookMapper) {
+    public BookService(BookRepository bookRepository, AuthorRepository authorRepository, GenreRepository genreRepository, BookMapper bookMapper, ReviewMapper reviewMapper, UserMapper userMapper) {
         this.bookRepository = bookRepository;
         this.authorRepository = authorRepository;
         this.genreRepository = genreRepository;
         this.bookMapper = bookMapper;
+        this.reviewMapper = reviewMapper;
+        this.userMapper = userMapper;
     }
 
     @Transactional
@@ -59,25 +64,62 @@ public class BookService {
 
     @Transactional(readOnly = true)
     public List<BookResponseDTO> findAllBooks() {
+        List<Book> books = bookRepository.findAll();
+        return bookMapper.toDto(books);
     }
 
     @Transactional(readOnly = true)
     public BookResponseDTO findBookById(Long id) {
+        return bookRepository.findById(id)
+                .map(bookMapper::toDto)
+                .orElseThrow(() -> new EntityNotFoundException("Book not found with ID: " + id));
     }
 
     @Transactional(readOnly = true)
     public List<BookResponseDTO> findAllBooksByAuthorId(Long id) {
+        List<Book> books = bookRepository.findAllByAuthorId(id);
+        return bookMapper.toDto(books);
     }
 
     @Transactional(readOnly = true)
     public List<BookResponseDTO> findAllBooksByGenreId(Long id) {
+        List<Book> books = bookRepository.findAllByGenreId(id);
+        return bookMapper.toDto(books);
     }
 
     @Transactional(readOnly = true)
     public List<ReviewResponseDTO> findAllReviewsByBookId(Long bookId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("Book not found with ID: " + bookId));
+
+        List<Review> reviews = book.getUserEntries().stream()
+                .flatMap(userBook -> userBook.getReviews().stream())
+                .toList();
+
+        return reviewMapper.toDto(reviews);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserResponseDTO> findAllUsersByBookId(Long bookId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("Livro não encontrado com o ID: " + bookId));
+
+        List<User> users = book.getUserEntries().stream()
+                .map(UserBook::getUser)
+                .distinct()
+                .toList();
+
+        return userMapper.toDto(users);
     }
 
     @Transactional(readOnly = true)
     public List<BookResponseDTO> findBooksByTitle(String title) {
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException("Title cannot be null or empty");
+        }
+
+        List<Book> books = bookRepository.findByTitleContainingIgnoreCase(title);
+
+        return bookMapper.toDto(books);
     }
 }
