@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @Service
 public class LibraryService {
@@ -105,9 +105,11 @@ public class LibraryService {
 
     @Transactional(readOnly = true)
     public List<UserBookResponseDTO> findAllBooksByUser(String username) {
-    }
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
-    @Transactional(readOnly = true)
-    public ReviewResponseDTO findAllReviewsByUserBookId(Long userBookId) {
+        Set<UserBook> libraryEntries = user.getLibrary();
+
+        return userBookMapper.toDto(libraryEntries).stream().toList();
     }
 }
