@@ -2,6 +2,7 @@ package com.eduardoxduardo.vlibrary.mapper;
 
 import com.eduardoxduardo.vlibrary.dto.response.AuthorResponseDTO;
 import com.eduardoxduardo.vlibrary.dto.response.BookResponseDTO;
+import com.eduardoxduardo.vlibrary.dto.response.BookSummaryResponseDTO;
 import com.eduardoxduardo.vlibrary.dto.response.GenreResponseDTO;
 import com.eduardoxduardo.vlibrary.model.entities.Book;
 import org.springframework.stereotype.Component;
@@ -33,6 +34,18 @@ public class BookMapper implements Mapper<BookResponseDTO, Book> {
                 authorDTO,
                 book.getDescription(),
                 genresDTO
+        );
+    }
+
+    public BookSummaryResponseDTO toSummaryDto(Book book) {
+        if (book == null) {
+            return null;
+        }
+
+        return new BookSummaryResponseDTO(
+                book.getId(),
+                book.getTitle(),
+                book.getAuthor().getName()
         );
     }
 }

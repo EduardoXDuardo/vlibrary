@@ -14,4 +14,6 @@ public class ReviewResponseDTO {
     private Double rating;
     private String comment;
     private LocalDate reviewDate;
+    private UserResponseDTO user;
+    private BookSummaryResponseDTO book;
 }
