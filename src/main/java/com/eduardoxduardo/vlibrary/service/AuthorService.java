@@ -31,9 +31,16 @@ public class AuthorService {
 
     @Transactional(readOnly = true)
     public List<AuthorResponseDTO> getAllAuthors() {
+        List<Author> authors = authorRepository.findAll();
+        return authors.stream()
+                .map(authorMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public AuthorResponseDTO getAuthorById(Long id) {
+        Author author = authorRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Author not found with id: " + id));
+        return authorMapper.toDto(author);
     }
 }
