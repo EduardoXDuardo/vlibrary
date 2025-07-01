@@ -33,9 +33,7 @@ public class GenreService {
     @Transactional(readOnly = true)
     public List<GenreResponseDTO> getAllGenres() {
         List<Genre> genres = genreRepository.findAll();
-        return genres.stream()
-                .map(genreMapper::toDto)
-                .collect(Collectors.toList());
+        return genreMapper.toDto(genres);
     }
 
     @Transactional(readOnly = true)

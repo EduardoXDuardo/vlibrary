@@ -32,9 +32,7 @@ public class AuthorService {
     @Transactional(readOnly = true)
     public List<AuthorResponseDTO> getAllAuthors() {
         List<Author> authors = authorRepository.findAll();
-        return authors.stream()
-                .map(authorMapper::toDto)
-                .collect(Collectors.toList());
+        return authorMapper.toDto(authors);
     }
 
     @Transactional(readOnly = true)
