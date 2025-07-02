@@ -1,6 +1,6 @@
 package com.eduardoxduardo.vlibrary.service;
 
-import com.eduardoxduardo.vlibrary.dto.request.BookCreateRequestDTO;
+import com.eduardoxduardo.vlibrary.dto.request.create.BookCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.BookResponseDTO;
 import com.eduardoxduardo.vlibrary.dto.response.ReviewResponseDTO;
 import com.eduardoxduardo.vlibrary.dto.response.UserResponseDTO;

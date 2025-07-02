@@ -1,4 +1,4 @@
-package com.eduardoxduardo.vlibrary.dto.request;
+package com.eduardoxduardo.vlibrary.dto.request.create;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

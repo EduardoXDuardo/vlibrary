@@ -30,7 +30,7 @@ public class Review implements Serializable {
     private LocalDate reviewDate;
 
     @ManyToOne
-    @JoinColumn(name = "user_book_id", nullable = false) // unique = true é removido
+    @JoinColumn(name = "user_book_id", nullable = false)
     private UserBook userBook;
 
     public Review(double rating, String comment, UserBook userBook) {

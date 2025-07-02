@@ -1,8 +1,8 @@
 package com.eduardoxduardo.vlibrary.service;
 
-import com.eduardoxduardo.vlibrary.dto.request.ReviewCreateRequestDTO;
-import com.eduardoxduardo.vlibrary.dto.request.UserBookCreateRequestDTO;
-import com.eduardoxduardo.vlibrary.dto.request.UserBookUpdateReadingStatusRequestDTO;
+import com.eduardoxduardo.vlibrary.dto.request.create.ReviewCreateRequestDTO;
+import com.eduardoxduardo.vlibrary.dto.request.create.UserBookCreateRequestDTO;
+import com.eduardoxduardo.vlibrary.dto.request.update.UserBookUpdateReadingStatusRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.ReviewResponseDTO;
 import com.eduardoxduardo.vlibrary.dto.response.UserBookResponseDTO;
 import com.eduardoxduardo.vlibrary.mapper.ReviewMapper;
@@ -86,6 +86,16 @@ public class LibraryService {
         return reviewMapper.toDto(newReview);
     }
 
+    @Transactional(readOnly = true)
+    public List<UserBookResponseDTO> findAllBooksByUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+
+        Set<UserBook> libraryEntries = user.getLibrary();
+
+        return userBookMapper.toDto(libraryEntries).stream().toList();
+    }
+
     @Transactional
     public UserBookResponseDTO updateReadingStatus(Long userBookId, UserBookUpdateReadingStatusRequestDTO request, String username) {
 
@@ -101,15 +111,5 @@ public class LibraryService {
 
         UserBook updatedUserBook = userBookRepository.save(userBook);
         return userBookMapper.toDto(updatedUserBook);
-    }
-
-    @Transactional(readOnly = true)
-    public List<UserBookResponseDTO> findAllBooksByUser(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
-
-        Set<UserBook> libraryEntries = user.getLibrary();
-
-        return userBookMapper.toDto(libraryEntries).stream().toList();
     }
 }

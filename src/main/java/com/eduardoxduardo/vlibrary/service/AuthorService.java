@@ -1,6 +1,6 @@
 package com.eduardoxduardo.vlibrary.service;
 
-import com.eduardoxduardo.vlibrary.dto.request.AuthorCreateRequestDTO;
+import com.eduardoxduardo.vlibrary.dto.request.create.AuthorCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.AuthorResponseDTO;
 import com.eduardoxduardo.vlibrary.model.entities.Author;
 import com.eduardoxduardo.vlibrary.mapper.AuthorMapper;

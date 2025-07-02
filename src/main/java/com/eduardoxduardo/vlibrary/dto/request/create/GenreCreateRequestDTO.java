@@ -1,13 +1,9 @@
-package com.eduardoxduardo.vlibrary.dto.request;
+package com.eduardoxduardo.vlibrary.dto.request.create;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class GenreCreateRequestDTO {
 
     @NotBlank(message = "Name is required")
