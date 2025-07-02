@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class BookUpdateDescriptionRequestDTO {
-    @NotBlank(message = "Description cannot be blank")
-    private String description;
+public class AuthorUpdateRequestDTO {
+    private String name;
 }

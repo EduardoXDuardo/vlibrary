@@ -1,6 +1,7 @@
 package com.eduardoxduardo.vlibrary.service;
 
 import com.eduardoxduardo.vlibrary.dto.request.create.AuthorCreateRequestDTO;
+import com.eduardoxduardo.vlibrary.dto.request.update.AuthorUpdateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.AuthorResponseDTO;
 import com.eduardoxduardo.vlibrary.model.entities.Author;
 import com.eduardoxduardo.vlibrary.mapper.AuthorMapper;
@@ -39,5 +40,18 @@ public class AuthorService {
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Author not found with id: " + id));
         return authorMapper.toDto(author);
+    }
+
+    @Transactional
+    public AuthorResponseDTO updateAuthor(Long authorId, AuthorUpdateRequestDTO request) {
+        Author author = authorRepository.findById(authorId)
+                .orElseThrow(() -> new EntityNotFoundException("Author not found with id: " + authorId));
+
+        if (request.getName() != null && !request.getName().isBlank()) {
+            author.setName(request.getName());
+        }
+
+        Author updatedAuthor = authorRepository.save(author);
+        return authorMapper.toDto(updatedAuthor);
     }
 }

@@ -1,6 +1,7 @@
 package com.eduardoxduardo.vlibrary.service;
 
 import com.eduardoxduardo.vlibrary.dto.request.create.BookCreateRequestDTO;
+import com.eduardoxduardo.vlibrary.dto.request.update.BookUpdateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.BookResponseDTO;
 import com.eduardoxduardo.vlibrary.dto.response.ReviewResponseDTO;
 import com.eduardoxduardo.vlibrary.dto.response.UserResponseDTO;
@@ -115,11 +116,43 @@ public class BookService {
     @Transactional(readOnly = true)
     public List<BookResponseDTO> findBooksByTitle(String title) {
         if (title == null || title.isBlank()) {
-            throw new IllegalArgumentException("Title cannot be null or empty");
+            return List.of();
         }
 
         List<Book> books = bookRepository.findByTitleContainingIgnoreCase(title);
 
         return bookMapper.toDto(books);
+    }
+
+    @Transactional
+    public BookResponseDTO updateBookDetails(Long bookId, BookUpdateRequestDTO request) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("Book not found with ID: " + bookId));
+
+        if (request.getTitle() != null && !request.getTitle().isBlank()) {
+            book.setTitle(request.getTitle());
+        }
+
+        if (request.getDescription() != null && !request.getDescription().isBlank()) {
+            book.setDescription(request.getDescription());
+        }
+
+        if (request.getAuthorId() != null) {
+            Author newAuthor = authorRepository.findById(request.getAuthorId())
+                    .orElseThrow(() -> new IllegalArgumentException("Author not found with ID: " + request.getAuthorId()));
+            book.setAuthor(newAuthor);
+        }
+
+
+        if (request.getGenreIds() != null && !request.getGenreIds().isEmpty()) {
+            Set<Genre> newGenres = request.getGenreIds().stream()
+                    .map(genreId -> genreRepository.findById(genreId)
+                            .orElseThrow(() -> new IllegalArgumentException("Genre not found with ID: " + genreId)))
+                    .collect(Collectors.toSet());
+            book.setGenres(newGenres);
+        }
+
+        Book updatedBook = bookRepository.save(book);
+        return bookMapper.toDto(updatedBook);
     }
 }

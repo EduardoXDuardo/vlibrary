@@ -1,6 +1,7 @@
 package com.eduardoxduardo.vlibrary.service;
 
 import com.eduardoxduardo.vlibrary.dto.request.create.GenreCreateRequestDTO;
+import com.eduardoxduardo.vlibrary.dto.request.update.GenreUpdateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.GenreResponseDTO;
 import com.eduardoxduardo.vlibrary.mapper.GenreMapper;
 import com.eduardoxduardo.vlibrary.model.entities.Genre;
@@ -42,5 +43,16 @@ public class GenreService {
         return genreMapper.toDto(genre);
     }
 
+    @Transactional
+    public GenreResponseDTO updateGenre(Long genreId, GenreUpdateRequestDTO request) {
+        Genre genre = genreRepository.findById(genreId)
+                .orElseThrow(() -> new EntityNotFoundException("Genre not found with id: " + genreId));
 
+        if (request.getName() != null && !request.getName().isEmpty()) {
+            genre.setName(request.getName());
+        }
+
+        Genre updatedGenre = genreRepository.save(genre);
+        return genreMapper.toDto(updatedGenre);
+    }
 }

@@ -2,7 +2,7 @@ package com.eduardoxduardo.vlibrary.service;
 
 import com.eduardoxduardo.vlibrary.dto.request.create.ReviewCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.create.UserBookCreateRequestDTO;
-import com.eduardoxduardo.vlibrary.dto.request.update.UserBookUpdateReadingStatusRequestDTO;
+import com.eduardoxduardo.vlibrary.dto.request.update.LibraryUpdateReadingStatusRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.ReviewResponseDTO;
 import com.eduardoxduardo.vlibrary.dto.response.UserBookResponseDTO;
 import com.eduardoxduardo.vlibrary.mapper.ReviewMapper;
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 import java.util.List;
 import java.util.Set;
 
@@ -97,7 +97,7 @@ public class LibraryService {
     }
 
     @Transactional
-    public UserBookResponseDTO updateReadingStatus(Long userBookId, UserBookUpdateReadingStatusRequestDTO request, String username) {
+    public UserBookResponseDTO updateReadingStatus(Long userBookId, LibraryUpdateReadingStatusRequestDTO request, String username) {
 
         UserBook userBook = userBookRepository.findById(userBookId)
                 .orElseThrow(() -> new EntityNotFoundException("Book not found with ID: " + userBookId));

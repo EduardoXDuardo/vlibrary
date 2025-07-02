@@ -1,6 +1,7 @@
 package com.eduardoxduardo.vlibrary.service;
 
 import com.eduardoxduardo.vlibrary.dto.request.create.UserRegisterRequestDTO;
+import com.eduardoxduardo.vlibrary.dto.request.update.UserUpdatePasswordRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.ReviewResponseDTO;
 import com.eduardoxduardo.vlibrary.dto.response.UserResponseDTO;
 import com.eduardoxduardo.vlibrary.mapper.ReviewMapper;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import org.springframework.security.access.AccessDeniedException;
 import java.util.List;
 
 @Service
@@ -86,5 +88,29 @@ public class UserService {
         return reviews.stream()
                 .map(reviewMapper::toDto)
                 .toList();
+    }
+
+    @Transactional
+    public UserResponseDTO updateUserPassword(Long userId, UserUpdatePasswordRequestDTO request, String username) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+
+        if (!user.getUsername().equals(username)) {
+            throw new AccessDeniedException("You can only update your own password.");
+        }
+
+        if (request.getOldPassword() != null && request.getNewPassword() != null) {
+            if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+                throw new IllegalArgumentException("Old password is incorrect.");
+            }
+
+            if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
+                throw new IllegalArgumentException("New password and old password are the same.");
+            }
+            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        }
+
+        User updatedUser = userRepository.save(user);
+        return userMapper.toDto(updatedUser);
     }
 }
