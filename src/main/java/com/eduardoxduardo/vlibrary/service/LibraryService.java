@@ -112,4 +112,16 @@ public class LibraryService {
         UserBook updatedUserBook = userBookRepository.save(userBook);
         return userBookMapper.toDto(updatedUserBook);
     }
+
+    @Transactional
+    public void deleteBookFromLibrary(Long userBookId, String username) {
+        UserBook userBook = userBookRepository.findById(userBookId)
+                .orElseThrow(() -> new EntityNotFoundException("UserBook not found with ID: " + userBookId));
+
+        if (!userBook.getUser().getUsername().equals(username)) {
+            throw new AccessDeniedException("You can only delete books from your own library.");
+        }
+
+        userBookRepository.delete(userBook);
+    }
 }

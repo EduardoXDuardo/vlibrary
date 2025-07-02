@@ -62,4 +62,19 @@ public class ReviewService {
         Review updatedReview = reviewRepository.save(review);
         return reviewMapper.toDto(updatedReview);
     }
+
+    @Transactional
+    public void deleteReview(Long reviewId, String username) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new EntityNotFoundException("Review not found with id: " + reviewId));
+
+        if (!review.getUserBook().getUser().getUsername().equals(username)) {
+            throw new AccessDeniedException("Access denied: You do not own this review.");
+        }
+
+        review.getUserBook().getReviews().remove(review);
+        review.setUserBook(null);
+
+        reviewRepository.delete(review);
+    }
 }
