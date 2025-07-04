@@ -57,13 +57,13 @@ public class BookService {
     }
 
     @Transactional(readOnly = true)
-    public List<BookResponseDTO> findAllBooks() {
+    public List<BookResponseDTO> getAllBooks() {
         List<Book> books = bookRepository.findAll();
         return bookMapper.toDto(books);
     }
 
     @Transactional(readOnly = true)
-    public BookResponseDTO findBookById(Long id) {
+    public BookResponseDTO getBookById(Long id) {
         return bookRepository.findById(id)
                 .map(bookMapper::toDto)
                 .orElseThrow(() -> new EntityNotFoundException("Book not found with ID: " + id));
@@ -71,7 +71,7 @@ public class BookService {
 
     @Transactional(readOnly = true)
     public List<BookResponseDTO> findAllBooksByAuthorId(Long id) {
-        List<Book> books = bookRepository.findAllByAuthorId(id);
+        List<Book> books = bookRepository.findByAuthorId(id);
         return bookMapper.toDto(books);
     }
 
@@ -118,7 +118,7 @@ public class BookService {
     }
 
     @Transactional
-    public BookResponseDTO updateBookDetails(Long bookId, BookUpdateRequestDTO request) {
+    public BookResponseDTO updateBook(Long bookId, BookUpdateRequestDTO request) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("Book not found with ID: " + bookId));
 
