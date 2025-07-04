@@ -30,7 +30,7 @@ public class AuthorController {
 
     @GetMapping("/{id}")
     public ResponseEntity<AuthorResponseDTO> getAuthorById(@PathVariable Long id) {
-        return ResponseEntity.ok(authorService.getAuthorById(id)); q
+        return ResponseEntity.ok(authorService.getAuthorById(id));
     }
 
     @PatchMapping("/{id}")
