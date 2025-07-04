@@ -12,6 +12,7 @@ import com.eduardoxduardo.vlibrary.repository.UserRepository;
 import com.eduardoxduardo.vlibrary.mapper.UserMapper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,19 +21,13 @@ import org.springframework.security.access.AccessDeniedException;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final ReviewMapper reviewMapper;
-
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper, ReviewMapper reviewMapper) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.userMapper = userMapper;
-        this.reviewMapper = reviewMapper;
-    }
 
     @Transactional
     public UserResponseDTO registerUser(UserRegisterRequestDTO request){

@@ -13,6 +13,7 @@ import com.eduardoxduardo.vlibrary.repository.AuthorRepository;
 import com.eduardoxduardo.vlibrary.repository.BookRepository;
 import com.eduardoxduardo.vlibrary.repository.GenreRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class BookService {
 
     private final BookRepository bookRepository;
@@ -29,15 +31,6 @@ public class BookService {
     private final BookMapper bookMapper;
     private final ReviewMapper reviewMapper;
     private final UserMapper userMapper;
-
-    public BookService(BookRepository bookRepository, AuthorRepository authorRepository, GenreRepository genreRepository, BookMapper bookMapper, ReviewMapper reviewMapper, UserMapper userMapper) {
-        this.bookRepository = bookRepository;
-        this.authorRepository = authorRepository;
-        this.genreRepository = genreRepository;
-        this.bookMapper = bookMapper;
-        this.reviewMapper = reviewMapper;
-        this.userMapper = userMapper;
-    }
 
     @Transactional
     public BookResponseDTO createBook(BookCreateRequestDTO request) {

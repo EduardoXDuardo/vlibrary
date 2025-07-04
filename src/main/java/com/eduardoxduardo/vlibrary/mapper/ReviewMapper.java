@@ -4,18 +4,15 @@ import com.eduardoxduardo.vlibrary.dto.response.BookSummaryResponseDTO;
 import com.eduardoxduardo.vlibrary.dto.response.UserResponseDTO;
 import com.eduardoxduardo.vlibrary.model.entities.Review;
 import com.eduardoxduardo.vlibrary.dto.response.ReviewResponseDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ReviewMapper implements Mapper<ReviewResponseDTO, Review> {
 
     private final BookMapper bookMapper;
     private final UserMapper userMapper;
-
-    public ReviewMapper(BookMapper bookMapper, UserMapper userMapper) {
-        this.bookMapper = bookMapper;
-        this.userMapper = userMapper;
-    }
 
     @Override
     public ReviewResponseDTO toDto(Review review) {

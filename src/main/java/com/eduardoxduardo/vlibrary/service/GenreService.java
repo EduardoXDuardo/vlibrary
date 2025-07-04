@@ -7,21 +7,18 @@ import com.eduardoxduardo.vlibrary.mapper.GenreMapper;
 import com.eduardoxduardo.vlibrary.model.entities.Genre;
 import com.eduardoxduardo.vlibrary.repository.GenreRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class GenreService {
 
     private final GenreRepository genreRepository;
     private final GenreMapper genreMapper;
-
-    public GenreService(GenreRepository genreRepository, GenreMapper genreMapper) {
-        this.genreRepository = genreRepository;
-        this.genreMapper = genreMapper;
-    }
 
     @Transactional
     public GenreResponseDTO createGenre(GenreCreateRequestDTO request) {

@@ -7,20 +7,18 @@ import com.eduardoxduardo.vlibrary.model.entities.Author;
 import com.eduardoxduardo.vlibrary.mapper.AuthorMapper;
 import com.eduardoxduardo.vlibrary.repository.AuthorRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AuthorService {
+
     private final AuthorRepository authorRepository;
     private final AuthorMapper authorMapper;
-
-    public AuthorService(AuthorRepository authorRepository, AuthorMapper authorMapper) {
-        this.authorRepository = authorRepository;
-        this.authorMapper = authorMapper;
-    }
 
     @Transactional
     public AuthorResponseDTO createAuthor(AuthorCreateRequestDTO request) {

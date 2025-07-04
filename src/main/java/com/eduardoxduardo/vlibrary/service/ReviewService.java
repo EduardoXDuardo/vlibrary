@@ -8,6 +8,7 @@ import com.eduardoxduardo.vlibrary.model.entities.UserBook;
 import com.eduardoxduardo.vlibrary.repository.ReviewRepository;
 import com.eduardoxduardo.vlibrary.repository.UserBookRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -15,17 +16,12 @@ import org.springframework.security.access.AccessDeniedException;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
     private final UserBookRepository userBookRepository;
-
-    public ReviewService(ReviewRepository reviewRepository, ReviewMapper reviewMapper, UserBookRepository userBookRepository) {
-        this.reviewRepository = reviewRepository;
-        this.reviewMapper = reviewMapper;
-        this.userBookRepository = userBookRepository;
-    }
 
     @Transactional(readOnly = true)
     public ReviewResponseDTO getReviewById(Long reviewId) {

@@ -16,6 +16,7 @@ import com.eduardoxduardo.vlibrary.repository.BookRepository;
 import com.eduardoxduardo.vlibrary.repository.UserBookRepository;
 import com.eduardoxduardo.vlibrary.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class LibraryService {
 
     private final UserBookRepository userBookRepository;
@@ -32,14 +34,6 @@ public class LibraryService {
     private final UserRepository userRepository;
     private final UserBookMapper userBookMapper;
     private final ReviewMapper reviewMapper;
-
-    public LibraryService(UserBookRepository userBookRepository, UserRepository userRepository, BookRepository bookRepository, UserBookMapper userBookMapper, ReviewMapper reviewMapper) {
-        this.userBookRepository = userBookRepository;
-        this.userRepository = userRepository;
-        this.bookRepository = bookRepository;
-        this.userBookMapper = userBookMapper;
-        this.reviewMapper = reviewMapper;
-    }
 
     @Transactional
     public UserBookResponseDTO addBookToUserLibrary(UserBookCreateRequestDTO request, String username) {
