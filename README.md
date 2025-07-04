@@ -8,9 +8,9 @@ A digital library management system built with Spring Boot.
 
 ## 🚧 Project Status
 
-**Last Updated:** 2025-07-04 03:38:57 UTC
+**Last Updated:** 2025-07-04 15:27:45 UTC
 
-This project is currently **under development**. Only basic authentication features have been implemented so far. More features will be added in the coming weeks.
+This project is currently **under development**. Basic authentication features and genre management have been implemented so far. More features will be added in the coming weeks.
 
 ## 🛠️ Technologies
 
@@ -22,7 +22,6 @@ This project is currently **under development**. Only basic authentication featu
 - PostgreSQL
 - Maven
 - Lombok
-
 
 ## 🏗️ Project Architecture
 
@@ -54,6 +53,12 @@ The security implementation (authentication and authorization) was developed wit
 ### Authentication
 - `POST /api/auth/register` - Register a new user
 - `POST /api/auth/login` - Login and receive JWT token
+
+### Genres
+- `POST /api/genres` - Create a new genre
+- `GET /api/genres` - Get all genres
+- `GET /api/genres/{id}` - Get genre by ID
+- `PATCH /api/genres/{id}` - Update a genre
 
 ## 🔜 Planned Endpoints (Not Yet Implemented)
 
