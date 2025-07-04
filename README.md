@@ -8,10 +8,9 @@ A digital library management system built with Spring Boot.
 
 ## 🚧 Project Status
 
-**Last Updated:** 2025-07-04 15:27:45 UTC
+**Last Updated:** 2025-07-04 16:06:46 UTC
 
-This project is currently **under development**. Basic authentication features and genre management have been implemented so far. More features will be added in the coming weeks.
-
+This project is currently **under development**. Basic authentication features, genre management, and author management have been implemented so far. More features will be added.
 ## 🛠️ Technologies
 
 - Java 24
@@ -59,6 +58,12 @@ The security implementation (authentication and authorization) was developed wit
 - `GET /api/genres` - Get all genres
 - `GET /api/genres/{id}` - Get genre by ID
 - `PATCH /api/genres/{id}` - Update a genre
+
+### Authors
+- `POST /api/authors` - Create a new author
+- `GET /api/authors` - Get all authors
+- `GET /api/authors/{id}` - Get author by ID
+- `PATCH /api/authors/{id}` - Update an author
 
 ## 🔜 Planned Endpoints (Not Yet Implemented)
 
