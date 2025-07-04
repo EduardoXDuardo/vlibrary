@@ -15,10 +15,12 @@ public class UserBookMapper implements Mapper<UserBookResponseDTO, UserBook> {
 
     private final UserMapper userMapper;
     private final BookMapper bookMapper;
+    private final ReviewMapper reviewMapper;
 
-    public UserBookMapper(UserMapper userMapper, BookMapper bookMapper) {
+    public UserBookMapper(UserMapper userMapper, BookMapper bookMapper, ReviewMapper reviewMapper) {
         this.userMapper = userMapper;
         this.bookMapper = bookMapper;
+        this.reviewMapper = reviewMapper;
     }
 
     @Override
@@ -32,7 +34,7 @@ public class UserBookMapper implements Mapper<UserBookResponseDTO, UserBook> {
         BookResponseDTO bookDTO = bookMapper.toDto(userBook.getBook());
 
         List<ReviewResponseDTO> reviews = userBook.getReviews().stream()
-                .map(review -> new ReviewMapper().toDto(review))
+                .map(reviewMapper::toDto)
                 .toList();
 
         return new UserBookResponseDTO(

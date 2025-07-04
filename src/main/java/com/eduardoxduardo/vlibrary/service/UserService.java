@@ -1,5 +1,6 @@
 package com.eduardoxduardo.vlibrary.service;
 
+import com.eduardoxduardo.vlibrary.dto.request.LoginRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.create.UserRegisterRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.update.UserUpdatePasswordRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.ReviewResponseDTO;
@@ -10,6 +11,7 @@ import com.eduardoxduardo.vlibrary.model.entities.User;
 import com.eduardoxduardo.vlibrary.repository.UserRepository;
 import com.eduardoxduardo.vlibrary.mapper.UserMapper;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

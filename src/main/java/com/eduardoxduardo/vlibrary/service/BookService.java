@@ -83,8 +83,8 @@ public class BookService {
     }
 
     @Transactional(readOnly = true)
-    public List<BookResponseDTO> findAllBooksByGenreId(Long id) {
-        List<Book> books = bookRepository.findAllByGenreId(id);
+    public List<BookResponseDTO> findAllBooksByGenreId(Long genreId) {
+        List<Book> books = bookRepository.findByGenresId(genreId);
         return bookMapper.toDto(books);
     }
 
