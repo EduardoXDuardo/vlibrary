@@ -49,7 +49,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{id}/password")
     public ResponseEntity<UserResponseDTO> updateUserPassword(
             @PathVariable Long id,
             @RequestBody @Valid UserUpdatePasswordRequestDTO request,
