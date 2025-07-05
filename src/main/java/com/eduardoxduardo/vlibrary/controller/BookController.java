@@ -31,7 +31,7 @@ public class BookController {
     // This endpoint allows searching for books by title, author ID, or genre ID
     // Only one of these parameters should be provided at a time for now.
     // TO DO: Needs to be improved in the future to allow multiple filters.
-    @GetMapping
+    @GetMapping("/search")
     public ResponseEntity<List<BookResponseDTO>> findBooks(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) Long authorId,
@@ -50,6 +50,7 @@ public class BookController {
 
         return ResponseEntity.ok(bookService.getAllBooks());
     }
+
     @PatchMapping("/{id}")
     public ResponseEntity<BookResponseDTO> updateBook(@PathVariable Long id, @Valid @RequestBody BookUpdateRequestDTO request) {
         return ResponseEntity.ok(bookService.updateBook(id, request));

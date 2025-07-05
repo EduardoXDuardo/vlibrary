@@ -82,9 +82,7 @@ public class UserService {
                 .flatMap(userBook -> userBook.getReviews().stream())
                 .toList();
 
-        return reviews.stream()
-                .map(reviewMapper::toDto)
-                .toList();
+        return reviewMapper.toDto(reviews);
     }
 
     @Transactional
