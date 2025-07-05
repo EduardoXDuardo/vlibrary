@@ -8,9 +8,10 @@ A digital library management system built with Spring Boot.
 
 ## 🚧 Project Status
 
-**Last Updated:** 2025-07-04 17:49:22 UTC
+**Last Updated:** 2025-07-05 17:46:25 UTC
 
-This project is currently **under development**. Authentication, genre management, author management, book management, and user management features have been implemented. Delete functionality and additional features will be added in the coming weeks.
+This project is currently **under development**. Authentication, genre management, author management, book management, user management, and personal library features have been implemented. Delete functionality and additional features will be added in the coming weeks.
+
 ## 🛠️ Technologies
 
 - Java 24
@@ -74,16 +75,26 @@ The security implementation (authentication and authorization) was developed wit
 - `GET /api/books/{id}` - Get book by ID
 - `PATCH /api/books/{id}` - Update a book
 
-## 🔜 Planned Endpoints (Not Yet Implemented)
+### Users
+- `GET /api/users/me` - Get the current authenticated user's profile
+- `GET /api/users/search` - Search for users
+- `GET /api/users` - Get all users
+- `GET /api/users/{id}` - Get user by ID
+- `PATCH /api/users/{id}/password` - Update the current user's password
 
 ### Library
-All library management endpoints are planned but not yet implemented.
+- `POST /api/library` - Add a book to the user's personal library
+- `GET /api/library` - Get all books in the user's personal library
+- `PATCH /api/library/{bookId}` - Update a book's reading status in the library
+- `DELETE /api/library/{bookId}` - Remove a book from the user's library
+
+## 🔜 Planned Endpoints (Not Yet Implemented)
 
 ### Reviews
 All review management endpoints are planned but not yet implemented.
 
-### All controllers
-All delete endpoints are planned but not yet implemented.
+### All controllers delete endpoints
+All delete endpoints are planned but not yet implemented, except the LibraryController one.
 
 ## 📋 Setup Instructions
 
