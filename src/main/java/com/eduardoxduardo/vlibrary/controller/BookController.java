@@ -3,6 +3,7 @@ package com.eduardoxduardo.vlibrary.controller;
 import com.eduardoxduardo.vlibrary.dto.request.create.BookCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.update.BookUpdateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.BookResponseDTO;
+import com.eduardoxduardo.vlibrary.dto.response.ReviewResponseDTO;
 import com.eduardoxduardo.vlibrary.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +50,11 @@ public class BookController {
         }
 
         return ResponseEntity.ok(bookService.getAllBooks());
+    }
+
+    @GetMapping("/{id}/reviews")
+    public ResponseEntity<List<ReviewResponseDTO>> getReviewsByBookId(@PathVariable Long id) {
+        return ResponseEntity.ok(bookService.findAllReviewsByBookId(id));
     }
 
     @PatchMapping("/{id}")

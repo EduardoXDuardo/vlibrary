@@ -17,6 +17,7 @@ import com.eduardoxduardo.vlibrary.repository.UserBookRepository;
 import com.eduardoxduardo.vlibrary.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -81,6 +82,14 @@ public class LibraryService {
     }
 
     @Transactional(readOnly = true)
+    public List<ReviewResponseDTO> findAllReviewsByUserBookId(Long userBookId) {
+        UserBook userBook = userBookRepository.findById(userBookId)
+                .orElseThrow(() -> new EntityNotFoundException("UserBook not found with ID: " + userBookId));
+
+        return reviewMapper.toDto(userBook.getReviews());
+    }
+
+    @Transactional(readOnly = true)
     public List<UserBookResponseDTO> findAllBooksByUser(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
@@ -108,7 +117,7 @@ public class LibraryService {
     }
 
     @Transactional
-    public void deleteBookFromLibrary(Long userBookId, String username) {
+    public ResponseEntity<Void> deleteBookFromLibrary(Long userBookId, String username) {
         UserBook userBook = userBookRepository.findById(userBookId)
                 .orElseThrow(() -> new EntityNotFoundException("UserBook not found with ID: " + userBookId));
 
@@ -117,5 +126,6 @@ public class LibraryService {
         }
 
         userBookRepository.delete(userBook);
+        return ResponseEntity.noContent().build();
     }
 }

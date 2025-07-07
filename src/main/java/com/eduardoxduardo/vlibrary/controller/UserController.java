@@ -1,6 +1,7 @@
 package com.eduardoxduardo.vlibrary.controller;
 
 import com.eduardoxduardo.vlibrary.dto.request.update.UserUpdatePasswordRequestDTO;
+import com.eduardoxduardo.vlibrary.dto.response.ReviewResponseDTO;
 import com.eduardoxduardo.vlibrary.dto.response.UserResponseDTO;
 import com.eduardoxduardo.vlibrary.service.UserService;
 import jakarta.validation.Valid;
@@ -47,6 +48,11 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> findAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @GetMapping("/{id}/reviews")
+    public ResponseEntity<List<ReviewResponseDTO>> findAllReviewsByUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.findAllReviewsByUserId(id));
     }
 
     @PatchMapping("/{id}/password")

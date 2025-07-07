@@ -30,14 +30,6 @@ public class ReviewService {
                 .orElseThrow(() -> new EntityNotFoundException("Review not found with id: " + reviewId));
     }
 
-    @Transactional(readOnly = true)
-    public List<ReviewResponseDTO> findAllReviewsByUserBookId(Long userBookId) {
-        UserBook userBook = userBookRepository.findById(userBookId)
-                .orElseThrow(() -> new EntityNotFoundException("UserBook not found with ID: " + userBookId));
-
-        return reviewMapper.toDto(userBook.getReviews());
-    }
-
     @Transactional
     public ReviewResponseDTO updateReview(Long reviewId, ReviewUpdateRequestDTO request, String username) {
         Review review = reviewRepository.findById(reviewId)

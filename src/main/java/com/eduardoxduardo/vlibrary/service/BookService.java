@@ -96,7 +96,7 @@ public class BookService {
     @Transactional(readOnly = true)
     public List<UserResponseDTO> findAllUsersByBookId(Long bookId) {
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new EntityNotFoundException("Livro não encontrado com o ID: " + bookId));
+                .orElseThrow(() -> new EntityNotFoundException("Book not found with ID: " + bookId));
 
         List<User> users = book.getUserEntries().stream()
                 .map(UserBook::getUser)
