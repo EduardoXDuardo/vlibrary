@@ -8,9 +8,9 @@ A digital library management system built with Spring Boot.
 
 ## 🚧 Project Status
 
-**Last Updated:** 2025-07-05 17:46:25 UTC
+**Last Updated:** 2025-07-07 17:59:08 UTC
 
-This project is currently **under development**. Authentication, genre management, author management, book management, user management, and personal library features have been implemented. Delete functionality and additional features will be added in the coming weeks.
+This project is currently **under development**. Authentication, genre management, author management, book management, user management, review management, and personal library features have been implemented. Delete functionality and additional features will be added in the coming weeks.
 
 ## 🛠️ Technologies
 
@@ -88,13 +88,19 @@ The security implementation (authentication and authorization) was developed wit
 - `PATCH /api/library/{userBookId}/reading-status` - Update a book's reading status in the user library
 - `DELETE /api/library/{bookId}` - Remove a book from the user's library
 
+### Reviews
+- `POST /api/library/{userBookId}/reviews` - Create a review for a book in the user's library
+- `GET /api/library/{userBookId}/reviews` - Get all reviews for a book in the user's library
+- `GET /api/books/{id}/reviews` - Get all reviews for a book
+- `GET /api/users/{id}/reviews` - Get all reviews by a user
+- `GET /api/reviews/{id}` - Get a review by ID
+- `PATCH /api/reviews/{id}` - Update a review
+- `DELETE /api/reviews/{id}` - Delete a review
+
 ## 🔜 Planned Endpoints (Not Yet Implemented)
 
-### Reviews
-All review management endpoints are planned but not yet implemented.
-
 ### All controllers delete endpoints
-All delete endpoints are planned but not yet implemented, except the LibraryController one.
+All delete endpoints are planned but not yet implemented, except the Library and Review Controllers ones.
 
 ## 📋 Setup Instructions
 
