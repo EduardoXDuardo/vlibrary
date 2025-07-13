@@ -28,9 +28,10 @@ public class UserBookMapper implements Mapper<UserBookResponseDTO, UserBook> {
         UserResponseDTO userDTO = userMapper.toDto(userBook.getUser());
         BookResponseDTO bookDTO = bookMapper.toDto(userBook.getBook());
 
-        List<ReviewResponseDTO> reviews = userBook.getReviews().stream()
-                .map(reviewMapper::toDto)
-                .toList();
+        List<ReviewResponseDTO> reviews = null;
+        if (userBook.getReviews() != null) {
+             reviews = reviewMapper.toDto(userBook.getReviews());
+        }
 
         return new UserBookResponseDTO(
                 userBook.getId(),

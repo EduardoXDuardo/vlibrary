@@ -34,7 +34,7 @@ public class UserBook implements Serializable {
     private Book book;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "reading_status", nullable = false)
     private ReadingStatus readingStatus;
 
     @OneToMany(mappedBy = "userBook", cascade = CascadeType.ALL)

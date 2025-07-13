@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.security.access.AccessDeniedException;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +41,7 @@ public class UserService {
                 request.getEmail(),
                 passwordEncoder.encode(request.getPassword())
         );
-
+        
         User savedUser = userRepository.save(newUser);
 
         return userMapper.toDto(savedUser);
