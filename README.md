@@ -8,7 +8,7 @@ A digital library management system built with Spring Boot.
 
 ## 🚧 Project Status
 
-**Last Updated:** 2025-07-07 17:59:08 UTC
+**Last Updated:** 2025-07-13 01:46:31
 
 This project is currently **under development**. Authentication, genre management, author management, book management, user management, review management, and personal library features have been implemented. Delete functionality and additional features will be added in the coming weeks.
 
@@ -97,6 +97,21 @@ The security implementation (authentication and authorization) was developed wit
 - `PATCH /api/reviews/{id}` - Update a review
 - `DELETE /api/reviews/{id}` - Delete a review
 
+## 🧪 API Testing with Postman
+
+This project includes a Postman collection with all the available endpoints for easy testing and exploration.
+
+Click the button below to import the collection into your Postman application:
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/luizdudu35/workspace/public-projects/collection/46291934-d0419c87-4271-4e71-a90a-00ba9b9aa2c3?action=share&source=copy-link&creator=46291934)
+
+### Getting Started with Postman
+
+1.  **Import the Collection:** Click the "Run in Postman" button above.
+2.  **Set Up an Environment:** It's recommended to create a Postman Environment and add a variable for your JWT token.
+3.  **Authenticate:** Run the `POST /api/auth/login` request first to get a token.
+4.  **Use the Token:** Copy the token from the login response and set it as the `Bearer Token` in the "Authorization" tab for the protected requests.
+
 ## 🔜 Planned Endpoints (Not Yet Implemented)
 
 ### All controllers delete endpoints
@@ -144,7 +159,6 @@ mvn spring-boot:run
 ```
 
 ## 🚀 Future Enhancements
-- Complete implementation of book management features
 - User profile management
 - Refactoring of security implementation
 - Integration with external book APIs
