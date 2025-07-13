@@ -109,4 +109,16 @@ public class UserService {
         User updatedUser = userRepository.save(user);
         return userMapper.toDto(updatedUser);
     }
+
+    @Transactional
+    public void deleteUser(Long userId, String username) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+
+        if (!user.getUsername().equals(username)) {
+            throw new AccessDeniedException("You can only delete your own account.");
+        }
+
+        userRepository.delete(user);
+    }
 }

@@ -37,7 +37,7 @@ public class UserBook implements Serializable {
     @Column(name = "reading_status", nullable = false)
     private ReadingStatus readingStatus;
 
-    @OneToMany(mappedBy = "userBook", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "userBook", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews;
 
     public UserBook(User user, Book book, ReadingStatus readingStatus) {

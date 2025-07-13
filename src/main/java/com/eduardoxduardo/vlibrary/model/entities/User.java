@@ -37,7 +37,7 @@ public class User implements Serializable, UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<UserBook> library;
 
     public User(String username, String email, String password) {
