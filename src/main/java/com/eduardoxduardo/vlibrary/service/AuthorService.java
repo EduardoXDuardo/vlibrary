@@ -52,4 +52,17 @@ public class AuthorService {
         Author updatedAuthor = authorRepository.save(author);
         return authorMapper.toDto(updatedAuthor);
     }
+
+    @Transactional
+    public void deleteAuthor(Long id) {
+        if (!authorRepository.existsById(id)) {
+            throw new EntityNotFoundException("Author not found with id: " + id);
+        }
+
+        if (authorRepository.existsByBooks_AuthorId(id)) {
+            throw new IllegalStateException("Cannot delete author with associated books.");
+        }
+
+        authorRepository.deleteById(id);
+    }
 }
