@@ -4,7 +4,9 @@ import com.eduardoxduardo.vlibrary.dto.request.create.GenreCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.update.GenreUpdateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.GenreResponseDTO;
 import com.eduardoxduardo.vlibrary.mapper.GenreMapper;
+import com.eduardoxduardo.vlibrary.model.entities.Book;
 import com.eduardoxduardo.vlibrary.model.entities.Genre;
+import com.eduardoxduardo.vlibrary.repository.BookRepository;
 import com.eduardoxduardo.vlibrary.repository.GenreRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ public class GenreService {
 
     private final GenreRepository genreRepository;
     private final GenreMapper genreMapper;
+    private final BookRepository bookRepository;
 
     @Transactional
     public GenreResponseDTO createGenre(GenreCreateRequestDTO request) {
@@ -51,5 +54,20 @@ public class GenreService {
 
         Genre updatedGenre = genreRepository.save(genre);
         return genreMapper.toDto(updatedGenre);
+    }
+
+    @Transactional
+    public void deleteGenre(Long id) {
+        if (!genreRepository.existsById(id)) {
+            throw new EntityNotFoundException("Genre not found with id: " + id);
+        }
+
+        List<Book> books = bookRepository.findByGenresId(id);
+        for (Book book : books) {
+            book.getGenres().removeIf(genre -> genre.getId().equals(id));
+        }
+        bookRepository.saveAll(books);
+
+        genreRepository.deleteById(id);
     }
 }

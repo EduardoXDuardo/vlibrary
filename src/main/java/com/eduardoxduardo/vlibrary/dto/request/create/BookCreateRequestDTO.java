@@ -16,7 +16,6 @@ public class BookCreateRequestDTO {
     @NotNull(message = "Author ID is required")
     private Long authorId;
 
-    @NotNull(message = "At least one genre is required")
     private Set<Long> genreIds;
 
     private String description;
