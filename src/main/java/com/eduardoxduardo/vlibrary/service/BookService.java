@@ -148,4 +148,17 @@ public class BookService {
         Book updatedBook = bookRepository.save(book);
         return bookMapper.toDto(updatedBook);
     }
+
+    @Transactional
+    public void deleteBook(Long id) {
+        if (!bookRepository.existsById(id)) {
+            throw new EntityNotFoundException("Book not found with ID: " + id);
+        }
+
+        if (bookRepository.existsByUserEntries_BookId(id)) {
+            throw new IllegalStateException("Cannot delete book with existing user entries");
+        }
+
+        bookRepository.deleteById(id);
+    }
 }
