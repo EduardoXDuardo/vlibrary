@@ -1,5 +1,6 @@
 package com.eduardoxduardo.vlibrary.service;
 
+import com.eduardoxduardo.vlibrary.dto.filter.BookSearchCriteria;
 import com.eduardoxduardo.vlibrary.dto.request.create.BookCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.update.BookUpdateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.BookResponseDTO;
@@ -14,6 +15,10 @@ import com.eduardoxduardo.vlibrary.repository.BookRepository;
 import com.eduardoxduardo.vlibrary.repository.GenreRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,9 +62,14 @@ public class BookService {
     }
 
     @Transactional(readOnly = true)
-    public List<BookResponseDTO> getAllBooks() {
-        List<Book> books = bookRepository.findAll();
-        return bookMapper.toDto(books);
+    public Page<BookResponseDTO> findBooks(BookSearchCriteria criteria, int page, int size, String sortBy, String sortDirection) {
+        Specification<Book> spec = createSpecification(criteria);
+
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+
+        Page<Book> books = bookRepository.findAll(spec, pageRequest);
+        return books.map(bookMapper::toDto);
     }
 
     @Transactional(readOnly = true)
@@ -67,18 +77,6 @@ public class BookService {
         return bookRepository.findById(id)
                 .map(bookMapper::toDto)
                 .orElseThrow(() -> new EntityNotFoundException("Book not found with ID: " + id));
-    }
-
-    @Transactional(readOnly = true)
-    public List<BookResponseDTO> findAllBooksByAuthorId(Long id) {
-        List<Book> books = bookRepository.findByAuthorId(id);
-        return bookMapper.toDto(books);
-    }
-
-    @Transactional(readOnly = true)
-    public List<BookResponseDTO> findAllBooksByGenreId(Long genreId) {
-        List<Book> books = bookRepository.findByGenresId(genreId);
-        return bookMapper.toDto(books);
     }
 
     @Transactional(readOnly = true)
@@ -104,17 +102,6 @@ public class BookService {
                 .toList();
 
         return userMapper.toDto(users);
-    }
-
-    @Transactional(readOnly = true)
-    public List<BookResponseDTO> findBooksByTitle(String title) {
-        if (title == null || title.isBlank()) {
-            return List.of();
-        }
-
-        List<Book> books = bookRepository.findByTitleContainingIgnoreCase(title);
-
-        return bookMapper.toDto(books);
     }
 
     @Transactional
@@ -160,5 +147,28 @@ public class BookService {
         }
 
         bookRepository.deleteById(id);
+    }
+
+    private Specification<Book> createSpecification(BookSearchCriteria criteria) {
+        return (root, query, criteriaBuilder) -> {
+            var predicates = criteriaBuilder.conjunction();
+
+            if (criteria.getTitle() != null && !criteria.getTitle().isBlank()) {
+                predicates = criteriaBuilder.and(predicates,
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), "%" + criteria.getTitle().toLowerCase() + "%"));
+            }
+
+            if (criteria.getAuthorId() != null) {
+                predicates = criteriaBuilder.and(predicates,
+                        criteriaBuilder.equal(root.get("author").get("id"), criteria.getAuthorId()));
+            }
+
+            if (criteria.getGenreId() != null) {
+                predicates = criteriaBuilder.and(predicates,
+                        criteriaBuilder.isMember(criteria.getGenreId(), root.get("genres")));
+            }
+
+            return predicates;
+        };
     }
 }

@@ -1,5 +1,6 @@
 package com.eduardoxduardo.vlibrary.controller;
 
+import com.eduardoxduardo.vlibrary.dto.filter.BookSearchCriteria;
 import com.eduardoxduardo.vlibrary.dto.request.create.BookCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.update.BookUpdateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.BookResponseDTO;
@@ -7,6 +8,7 @@ import com.eduardoxduardo.vlibrary.dto.response.ReviewResponseDTO;
 import com.eduardoxduardo.vlibrary.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,27 +31,19 @@ public class BookController {
         return ResponseEntity.ok(bookService.getBookById(id));
     }
 
-    // This endpoint allows searching for books by title, author ID, or genre ID
-    // Only one of these parameters should be provided at a time for now.
-    // TO DO: Needs to be improved in the future to allow multiple filters.
-    @GetMapping("/search")
-    public ResponseEntity<List<BookResponseDTO>> findBooks(
+    @GetMapping
+    public ResponseEntity<Page<BookResponseDTO>> findBooks(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) Long authorId,
-            @RequestParam(required = false) Long genreId
+            @RequestParam(required = false) Long genreId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "title") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection
     ) {
-
-        if (title != null) {
-            return ResponseEntity.ok(bookService.findBooksByTitle(title));
-        }
-        if (authorId != null) {
-            return ResponseEntity.ok(bookService.findAllBooksByAuthorId(authorId));
-        }
-        if (genreId != null) {
-            return ResponseEntity.ok(bookService.findAllBooksByGenreId(genreId));
-        }
-
-        return ResponseEntity.ok(bookService.getAllBooks());
+        BookSearchCriteria criteria = new BookSearchCriteria(title, authorId, genreId);
+        Page<BookResponseDTO> books = bookService.findBooks(criteria, page, size, sortBy, sortDirection);
+        return ResponseEntity.ok(books);
     }
 
     @GetMapping("/{id}/reviews")
