@@ -8,7 +8,7 @@ A digital library management system built with Spring Boot.
 
 ## 🚧 Project Status
 
-**Last Updated:** 2025-07-15 15:49:12 UTC
+**Last Updated:** 2025-07-15 15:57:26 UTC
 
 This project is currently **under development**. Authentication, genre management, author management, book management, user management, review management, and personal library features have been implemented. Delete functionality and additional features will be added in the coming weeks.
 
@@ -119,11 +119,6 @@ Click the button below to import the collection into your Postman application:
 2.  **Set Up an Environment:** It's recommended to create a Postman Environment and add a variable for your JWT token.
 3.  **Authenticate:** Run the `POST /api/auth/login` request first to get a token.
 4.  **Use the Token:** Copy the token from the login response and set it as the `Bearer Token` in the "Authorization" tab for the protected requests.
-
-## 🔜 Planned Endpoints (Not Yet Implemented)
-
-### All controllers delete endpoints
-All delete endpoints are planned but not yet implemented, except the Library and Review Controllers ones.
 
 ## 📋 Setup Instructions
 
