@@ -8,7 +8,7 @@ A digital library management system built with Spring Boot.
 
 ## 🚧 Project Status
 
-**Last Updated:** 2025-07-15 15:33:09 UTC
+**Last Updated:** 2025-07-15 15:49:12 UTC
 
 This project is currently **under development**. Authentication, genre management, author management, book management, user management, review management, and personal library features have been implemented. Delete functionality and additional features will be added in the coming weeks.
 
@@ -67,6 +67,8 @@ The security implementation (authentication and authorization) was developed wit
 - `GET /api/authors` - Get all authors
 - `GET /api/authors/{id}` - Get author by ID
 - `PATCH /api/authors/{id}` - Update an author
+- `DELETE /api/authors/{id}` - Delete an author 
+  > Note: An author can only be deleted if it has no books associated with them.
 
 ### Books
 - `POST /api/books` - Create a new book
