@@ -14,14 +14,15 @@ This project is currently **under development**. Authentication, genre managemen
 
 ## 🛠️ Technologies
 
-- Java 24
+- Java 17
 - Spring Boot 3.5.3
-- Spring Security
-- JWT Authentication
+- Spring Security with JWT Authentication
 - Spring Data JPA
-- PostgreSQL
+- PostgreSQL (Production) / H2 (Development)
 - Maven
 - Lombok
+- SpringDoc OpenAPI 3 (Swagger)
+- Hibernate Validation
 
 ## 🏗️ Project Architecture
 
@@ -123,49 +124,64 @@ Click the button below to import the collection into your Postman application:
 ## 📋 Setup Instructions
 
 ### Prerequisites
-- Java 24 JDK
-- PostgreSQL
-- Maven
+- Java 17 JDK or later
+- PostgreSQL (for production)
+- Maven 3.6+
 
-### Configuration
+### Quick Start (Development)
 1. Clone the repository
-```
+```bash
 git clone https://github.com/EduardoXDuardo/vlibrary.git
+cd vlibrary
 ```
 
-2. Create your own `application.properties` file in `src/main/resources` by copying the example file:
-```
-cp src/main/resources/application.properties.example src/main/resources/application.properties
-```
-
-3. Edit the `application.properties` file with your specific database credentials and settings. The example file provides the structure you need to follow:
-```
-# Database Configuration
-spring.datasource.url=jdbc:postgresql://localhost:5432/vlibrary
-spring.datasource.username=your_username
-spring.datasource.password=your_password
-spring.jpa.hibernate.ddl-auto=update
-
-# JWT Configuration
-app.jwt.secret=your_jwt_secret_key
-app.jwt.expiration=86400000
+2. Run with development profile (uses H2 in-memory database)
+```bash
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-4. Build the project
-```
-mvn clean install
+3. Access the application:
+   - API: http://localhost:8080
+   - Swagger UI: http://localhost:8080/swagger-ui.html
+   - H2 Console: http://localhost:8080/h2-console
+
+### Production Setup
+1. Set up PostgreSQL database
+2. Create your environment-specific configuration by setting environment variables:
+```bash
+export DATABASE_URL=jdbc:postgresql://localhost:5432/vlibrary
+export DATABASE_USERNAME=your_username
+export DATABASE_PASSWORD=your_password
+export JWT_SECRET=your_very_long_and_secure_secret_key
 ```
 
-5. Run the application
+3. Run with production profile
+```bash
+mvn spring-boot:run -Dspring-boot.run.profiles=prod
 ```
-mvn spring-boot:run
-```
+
+### Configuration Profiles
+- **dev**: Development profile with H2 database, debug logging, and Swagger UI enabled
+- **prod**: Production profile with PostgreSQL, optimized logging, and security hardening
+- **test**: Test profile with H2 database for running tests
+
+### Environment Variables (Production)
+- `DATABASE_URL`: PostgreSQL connection URL
+- `DATABASE_USERNAME`: Database username
+- `DATABASE_PASSWORD`: Database password
+- `JWT_SECRET`: JWT signing secret (must be long and secure)
+- `JWT_EXPIRATION`: JWT token expiration time in milliseconds (default: 86400000)
+- `PORT`: Server port (default: 8080)
 
 ## 🚀 Future Enhancements
 - User profile management
-- Refactoring of security implementation
 - Integration with external book APIs
 - Enhanced search functionality
+- Caching implementation
+- Rate limiting for API endpoints
+- Enhanced password strength validation
+- Email verification system
+- Book recommendation system
 
 ## 📄 License
 This project is licensed under the MIT License - see the LICENSE file for details.
