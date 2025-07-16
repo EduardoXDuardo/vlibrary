@@ -1,11 +1,14 @@
 package com.eduardoxduardo.vlibrary.service;
 
+import com.eduardoxduardo.vlibrary.dto.filter.BookSearchCriteria;
+import com.eduardoxduardo.vlibrary.dto.filter.UserSearchCriteria;
 import com.eduardoxduardo.vlibrary.dto.request.LoginRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.create.UserRegisterRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.update.UserUpdatePasswordRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.ReviewResponseDTO;
 import com.eduardoxduardo.vlibrary.dto.response.UserResponseDTO;
 import com.eduardoxduardo.vlibrary.mapper.ReviewMapper;
+import com.eduardoxduardo.vlibrary.model.entities.Book;
 import com.eduardoxduardo.vlibrary.model.entities.Review;
 import com.eduardoxduardo.vlibrary.model.entities.User;
 import com.eduardoxduardo.vlibrary.repository.UserRepository;
@@ -13,6 +16,10 @@ import com.eduardoxduardo.vlibrary.mapper.UserMapper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -48,20 +55,6 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserResponseDTO getUserByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .map(userMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with username: " + username));
-    }
-
-    @Transactional(readOnly = true)
-    public UserResponseDTO getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .map(userMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
-    }
-
-    @Transactional(readOnly = true)
     public UserResponseDTO getUserById(Long id) {
         return userRepository.findById(id)
                 .map(userMapper::toDto)
@@ -69,9 +62,20 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<UserResponseDTO> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        return userMapper.toDto(users);
+    public Page<UserResponseDTO> findUsers(UserSearchCriteria criteria, int page, int size, String sortBy, String sortDirection) {
+        Specification<User> spec = createSpecification(criteria);
+
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+
+        Page<User> users = userRepository.findAll(spec, pageRequest);
+        return users.map(userMapper::toDto);
+    }
+
+    public UserResponseDTO getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .map(userMapper::toDto)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with username: " + username));
     }
 
     @Transactional(readOnly = true)
@@ -120,5 +124,23 @@ public class UserService {
         }
 
         userRepository.delete(user);
+    }
+
+    private Specification<User> createSpecification(UserSearchCriteria criteria) {
+        return (root, query, criteriaBuilder) -> {
+            var predicates = criteriaBuilder.conjunction();
+
+            if (criteria.getEmail() != null && !criteria.getEmail().isBlank()) {
+                predicates = criteriaBuilder.and(predicates,
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), "%" + criteria.getEmail().toLowerCase() + "%"));
+            }
+
+            if (criteria.getUsername() != null && !criteria.getUsername().isBlank()) {
+                predicates = criteriaBuilder.and(predicates,
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("username")), "%" + criteria.getUsername().toLowerCase() + "%"));
+            }
+
+            return predicates;
+        };
     }
 }

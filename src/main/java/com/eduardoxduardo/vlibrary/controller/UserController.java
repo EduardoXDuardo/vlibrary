@@ -1,11 +1,13 @@
 package com.eduardoxduardo.vlibrary.controller;
 
+import com.eduardoxduardo.vlibrary.dto.filter.UserSearchCriteria;
 import com.eduardoxduardo.vlibrary.dto.request.update.UserUpdatePasswordRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.ReviewResponseDTO;
 import com.eduardoxduardo.vlibrary.dto.response.UserResponseDTO;
 import com.eduardoxduardo.vlibrary.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,25 +31,18 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<UserResponseDTO> findUser(
-            @RequestParam(required = false) String username,
-            @RequestParam(required = false) String email
-    ) {
-
-        if (username != null) {
-            return ResponseEntity.ok(userService.getUserByUsername(username));
-        }
-        if (email != null) {
-            return ResponseEntity.ok(userService.getUserByEmail(email));
-        }
-
-        return ResponseEntity.badRequest().build();
-    }
-
     @GetMapping
-    public ResponseEntity<List<UserResponseDTO>> findAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    public ResponseEntity<Page<UserResponseDTO>> findUsers(
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String email,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "username") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection
+    ) {
+        UserSearchCriteria criteria = new UserSearchCriteria(username, email);
+        Page<UserResponseDTO> users = userService.findUsers(criteria, page, size, sortBy, sortDirection);
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{id}/reviews")
