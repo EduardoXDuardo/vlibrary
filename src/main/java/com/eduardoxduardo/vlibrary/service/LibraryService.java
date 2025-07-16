@@ -1,5 +1,6 @@
 package com.eduardoxduardo.vlibrary.service;
 
+import com.eduardoxduardo.vlibrary.dto.filter.LibrarySearchCriteria;
 import com.eduardoxduardo.vlibrary.dto.request.create.ReviewCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.create.UserBookCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.update.LibraryUpdateReadingStatusRequestDTO;
@@ -16,8 +17,13 @@ import com.eduardoxduardo.vlibrary.repository.BookRepository;
 import com.eduardoxduardo.vlibrary.repository.UserBookRepository;
 import com.eduardoxduardo.vlibrary.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -82,21 +88,22 @@ public class LibraryService {
     }
 
     @Transactional(readOnly = true)
+    public Page<UserBookResponseDTO> searchLibrary(LibrarySearchCriteria criteria, int page, int size, String sortBy, String sortDirection, String username) {
+        Specification<UserBook> spec = createSpecification(criteria, username);
+
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+
+        Page<UserBook> entries = userBookRepository.findAll(spec, pageRequest);
+        return entries.map(userBookMapper::toDto);
+    }
+
+    @Transactional(readOnly = true)
     public List<ReviewResponseDTO> findAllReviewsByUserBookId(Long userBookId) {
         UserBook userBook = userBookRepository.findById(userBookId)
                 .orElseThrow(() -> new EntityNotFoundException("UserBook not found with ID: " + userBookId));
 
         return reviewMapper.toDto(userBook.getReviews());
-    }
-
-    @Transactional(readOnly = true)
-    public List<UserBookResponseDTO> findAllBooksByUser(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
-
-        Set<UserBook> libraryEntries = user.getLibrary();
-
-        return userBookMapper.toDto(libraryEntries).stream().toList();
     }
 
     @Transactional
@@ -117,7 +124,7 @@ public class LibraryService {
     }
 
     @Transactional
-    public ResponseEntity<Void> deleteBookFromLibrary(Long userBookId, String username) {
+    public void deleteBookFromLibrary(Long userBookId, String username) {
         UserBook userBook = userBookRepository.findById(userBookId)
                 .orElseThrow(() -> new EntityNotFoundException("UserBook not found with ID: " + userBookId));
 
@@ -126,6 +133,51 @@ public class LibraryService {
         }
 
         userBookRepository.delete(userBook);
-        return ResponseEntity.noContent().build();
+    }
+
+    public Specification<UserBook> createSpecification(LibrarySearchCriteria criteria, String username) {
+        return (root, query, criteriaBuilder) -> {
+            var predicates = criteriaBuilder.conjunction();
+
+            if (criteria.getUserId() == null) {
+                predicates = criteriaBuilder.and(predicates,
+                        criteriaBuilder.equal(root.get("user").get("username"), username));
+            }
+            else {
+                predicates = criteriaBuilder.and(predicates,
+                        criteriaBuilder.equal(root.get("user").get("id"), criteria.getUserId()));
+            }
+
+            if (criteria.getBookTitle() != null && !criteria.getBookTitle().isBlank()) {
+                predicates = criteriaBuilder.and(predicates,
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("book").get("title")), "%" + criteria.getBookTitle().toLowerCase() + "%"));
+            }
+
+            if (criteria.getAuthorId() != null) {
+                predicates = criteriaBuilder.and(predicates,
+                        criteriaBuilder.equal(root.get("book").get("author").get("id"), criteria.getAuthorId()));
+            }
+
+            if (criteria.getGenreId() != null) {
+                predicates = criteriaBuilder.and(predicates,
+                        criteriaBuilder.isMember(criteria.getGenreId(), root.get("book").get("genres")));
+            }
+
+            if (criteria.getRating() != null) {
+                Join<UserBook, Review> reviewJoin = root.join("reviews", JoinType.LEFT);
+                predicates = criteriaBuilder.and(predicates,
+                        criteriaBuilder.equal(reviewJoin.get("rating"), criteria.getRating()));
+                if (query != null) {
+                    query.distinct(true);
+                }
+            }
+
+            if (criteria.getStatus() != null) {
+                predicates = criteriaBuilder.and(predicates,
+                        criteriaBuilder.equal(root.get("readingStatus"), criteria.getStatus()));
+            }
+
+            return predicates;
+        };
     }
 }

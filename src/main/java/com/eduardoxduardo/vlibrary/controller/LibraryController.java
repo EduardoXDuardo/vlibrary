@@ -1,13 +1,18 @@
 package com.eduardoxduardo.vlibrary.controller;
 
+import com.eduardoxduardo.vlibrary.dto.filter.BookSearchCriteria;
+import com.eduardoxduardo.vlibrary.dto.filter.LibrarySearchCriteria;
 import com.eduardoxduardo.vlibrary.dto.request.create.ReviewCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.create.UserBookCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.update.LibraryUpdateReadingStatusRequestDTO;
+import com.eduardoxduardo.vlibrary.dto.response.BookResponseDTO;
 import com.eduardoxduardo.vlibrary.dto.response.ReviewResponseDTO;
 import com.eduardoxduardo.vlibrary.dto.response.UserBookResponseDTO;
+import com.eduardoxduardo.vlibrary.model.enums.ReadingStatus;
 import com.eduardoxduardo.vlibrary.service.LibraryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,8 +44,22 @@ public class LibraryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserBookResponseDTO>> getUserLibrary(Principal principal){
-        return ResponseEntity.ok(libraryService.findAllBooksByUser(principal.getName()));
+    public ResponseEntity<Page<UserBookResponseDTO>> searchLibrary(
+            @RequestParam(required = false ) Long userId,
+            @RequestParam(required = false) String bookTitle,
+            @RequestParam(required = false) Long authorId,
+            @RequestParam(required = false) Long genreId,
+            @RequestParam(required = false) Double rating,
+            @RequestParam(required = false) ReadingStatus status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection,
+            Principal principal
+    ) {
+        LibrarySearchCriteria criteria = new LibrarySearchCriteria(userId, bookTitle, authorId, genreId, rating, status);
+        Page<UserBookResponseDTO> entries = libraryService.searchLibrary(criteria, page, size, sortBy, sortDirection, principal.getName());
+        return ResponseEntity.ok(entries);
     }
 
     @GetMapping("/{userBookId}/reviews")
