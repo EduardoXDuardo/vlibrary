@@ -8,7 +8,7 @@ A digital library management system built with Spring Boot.
 
 ## 🚧 Project Status
 
-**Last Updated:** 2025-07-16 15:03:45 UTC
+**Last Updated:** 2025-07-16 17:12:01 UTC
 
 This project is currently **under development**. Authentication, genre management, author management, book management, user management, review management, and personal library features have been implemented.
 
@@ -92,7 +92,10 @@ The security implementation (authentication and authorization) was developed wit
 
 ### Library
 - `POST /api/library` - Add a book to the user's personal library
-- `GET /api/library` - Get all books in the user's personal library
+- `GET /api/library` - Search the library
+- - Supports searching by user, title, author, genre, rating and status, as well as pagination and sorting
+- - Example: `GET /api/library?userId=123&bookTitle=abc&authorId=456&genreId=789&rating=2.5&status=read&page=0&size=10&sortBy=id&sortDirection=asc`
+- - Note: If no user ID is provided, it defaults to the authenticated user.
 - `PATCH /api/library/{userBookId}/reading-status` - Update a book's reading status in the user library
 - `DELETE /api/library/{bookId}` - Remove a book from the user's library
 
