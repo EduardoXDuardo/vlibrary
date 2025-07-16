@@ -8,9 +8,9 @@ A digital library management system built with Spring Boot.
 
 ## 🚧 Project Status
 
-**Last Updated:** 2025-07-15 23:58:25 UTC
+**Last Updated:** 2025-07-16 15:03:45 UTC
 
-This project is currently **under development**. Authentication, genre management, author management, book management, user management, review management, and personal library features have been implemented. Delete functionality and additional features will be added in the coming weeks.
+This project is currently **under development**. Authentication, genre management, author management, book management, user management, review management, and personal library features have been implemented.
 
 ## 🛠️ Technologies
 
@@ -72,7 +72,7 @@ The security implementation (authentication and authorization) was developed wit
 
 ### Books
 - `POST /api/books` - Create a new book
-- `GET /api/books` - Get all books 
+- `GET /api/books` - Search for books
 - - Supports searching by title, author, and genre, as well as pagination and sorting
 - - Example: `GET /api/books?title=xyz&authorId=123&genreId=456&page=0&size=10&sortBy=title&sortDirection=asc`
 - `GET /api/books/{id}` - Get book by ID
@@ -82,8 +82,9 @@ The security implementation (authentication and authorization) was developed wit
 
 ### Users
 - `GET /api/users/me` - Get the current authenticated user's profile
-- `GET /api/users/search` - Search for users
-- `GET /api/users` - Get all users
+- `GET /api/users` - Search for users
+- - Supports searching by username and email, as well as pagination and sorting
+- - Example: `GET /api/users?username=abc&email=def&page=0&size=10&sortBy=username&sortDirection=asc`
 - `GET /api/users/{id}` - Get user by ID
 - `PATCH /api/users/{id}/password` - Update the current user's password
 - `DELETE /api/users/{id}` - Delete a user
