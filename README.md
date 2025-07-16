@@ -27,6 +27,17 @@ This project is currently **under development**. Authentication, genre managemen
 
 VLibrary follows a standard layered architecture pattern:
 
+### Key Components
+
+- **API Layer**: REST controllers for authentication endpoints
+- **Service Layer**: Business logic and security implementation
+- **Data Layer**: JPA repositories and entity models
+- **Entities**: Domain models representing the database structure
+- **DTOs**: Data Transfer Objects for request/response/filter data encapsulation
+- **Security**: JWT-based authentication and authorization
+
+The application separates domain entities from API representations using DTOs, ensuring clean data contracts and preventing entity exposure. Spring Security provides authentication with JWT tokens, enabling stateless API access with secure endpoints.
+
 ```
 DTOs → Controllers → Services → Repositories → Database
       ↑                                          |
@@ -34,15 +45,13 @@ DTOs → Controllers → Services → Repositories → Database
                (Entity to DTO conversion)
 ```
 
-### Key Components
+## Class Diagram
 
-- **API Layer**: REST controllers for authentication endpoints
-- **Service Layer**: Business logic and security implementation
-- **Data Layer**: JPA repositories and entity models
-- **DTOs**: Data Transfer Objects for request/response data encapsulation
-- **Security**: JWT-based authentication and authorization
+Below is a UML class diagram representing the main entities and their relationships in the project:
 
-The application separates domain entities from API representations using DTOs, ensuring clean data contracts and preventing entity exposure. Spring Security provides authentication with JWT tokens, enabling stateless API access with secure endpoints.
+![class-diagram.png](src/main/resources/static/class-diagram.png)
+
+The diagram shows the core entities (`User`, `Book`, `Author`, `Genre`, `UserBook`, `Review`, `ReadingStatus`) and how they are related.
 
 ## ⚠️ Security Implementation Note
 
