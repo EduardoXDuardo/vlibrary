@@ -8,7 +8,7 @@ A digital library management system built with Spring Boot.
 
 ## 🚧 Project Status
 
-**Last Updated:** 2025-07-17 17:50:10 UTC
+**Last Updated:** 2025-07-17 18:07:20 UTC
 
 This project is currently **under development**. Authentication, genre management, author management, book management, user management, review management, and personal library features have been implemented.
 
@@ -65,7 +65,9 @@ The security implementation (authentication and authorization) was developed wit
 
 ### Genres
 - `POST /api/genres` - Create a new genre
-- `GET /api/genres` - Get all genres
+- `GET /api/genres` - Search for genres
+- - Supports searching by name, as well as pagination and sorting
+- - Example: `GET /api/genres?name=abc&page=0&size=10&sortBy=name&sortDirection=asc`
 - `GET /api/genres/{id}` - Get genre by ID
 - `PATCH /api/genres/{id}` - Update a genre
 - `DELETE /api/genres/{id}` - Delete a genre
