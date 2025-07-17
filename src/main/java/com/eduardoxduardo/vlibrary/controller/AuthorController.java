@@ -1,11 +1,16 @@
 package com.eduardoxduardo.vlibrary.controller;
 
+import com.eduardoxduardo.vlibrary.dto.filter.AuthorSearchCriteria;
+import com.eduardoxduardo.vlibrary.dto.filter.BookSearchCriteria;
 import com.eduardoxduardo.vlibrary.dto.request.create.AuthorCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.update.AuthorUpdateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.AuthorResponseDTO;
+import com.eduardoxduardo.vlibrary.model.entities.Book;
 import com.eduardoxduardo.vlibrary.service.AuthorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +29,16 @@ public class AuthorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AuthorResponseDTO>> getAllAuthors() {
-        return ResponseEntity.ok(authorService.getAllAuthors());
+    public ResponseEntity<Page<AuthorResponseDTO>> searchAuthors(
+            @RequestParam(required = false) String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection
+    ) {
+        AuthorSearchCriteria criteria = new AuthorSearchCriteria(name);
+        Page<AuthorResponseDTO> authors = authorService.findAuthors(criteria, page, size, sortBy, sortDirection);
+        return ResponseEntity.ok(authors);
     }
 
     @GetMapping("/{id}")
