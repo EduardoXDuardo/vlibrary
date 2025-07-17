@@ -1,11 +1,13 @@
 package com.eduardoxduardo.vlibrary.controller;
 
+import com.eduardoxduardo.vlibrary.dto.filter.GenreSearchCriteria;
 import com.eduardoxduardo.vlibrary.dto.request.create.GenreCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.update.GenreUpdateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.GenreResponseDTO;
 import com.eduardoxduardo.vlibrary.service.GenreService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +26,16 @@ public class GenreController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GenreResponseDTO>> getAllGenres() {
-        return ResponseEntity.ok(genreService.getAllGenres());
+    public ResponseEntity<Page<GenreResponseDTO>> searchGenres(
+            @RequestParam(required = false) String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection
+    ) {
+        GenreSearchCriteria criteria = new GenreSearchCriteria(name);
+        Page<GenreResponseDTO> genres = genreService.findGenres(criteria, page, size, sortBy, sortDirection);
+        return ResponseEntity.ok(genres);
     }
 
     @GetMapping("/{id}")

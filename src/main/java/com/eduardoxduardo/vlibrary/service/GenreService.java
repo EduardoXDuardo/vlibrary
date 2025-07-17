@@ -1,5 +1,7 @@
 package com.eduardoxduardo.vlibrary.service;
 
+import com.eduardoxduardo.vlibrary.dto.filter.AuthorSearchCriteria;
+import com.eduardoxduardo.vlibrary.dto.filter.GenreSearchCriteria;
 import com.eduardoxduardo.vlibrary.dto.request.create.GenreCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.update.GenreUpdateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.GenreResponseDTO;
@@ -10,6 +12,10 @@ import com.eduardoxduardo.vlibrary.repository.BookRepository;
 import com.eduardoxduardo.vlibrary.repository.GenreRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,9 +37,16 @@ public class GenreService {
     }
 
     @Transactional(readOnly = true)
-    public List<GenreResponseDTO> getAllGenres() {
-        List<Genre> genres = genreRepository.findAll();
-        return genreMapper.toDto(genres);
+    public Page<GenreResponseDTO> findGenres(GenreSearchCriteria criteria, int page, int size, String sortBy, String sortDirection) {
+
+        Specification<Genre> spec = createSpecification(criteria);
+
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+
+        Page<Genre> genres = genreRepository.findAll(spec, pageRequest);
+
+        return genres.map(genreMapper::toDto);
     }
 
     @Transactional(readOnly = true)
@@ -69,5 +82,18 @@ public class GenreService {
         bookRepository.saveAll(books);
 
         genreRepository.deleteById(id);
+    }
+
+    private Specification<Genre> createSpecification(GenreSearchCriteria criteria) {
+        return (root, query, criteriaBuilder) -> {
+            var predicates = criteriaBuilder.conjunction();
+
+            if (criteria.getName() != null && !criteria.getName().isBlank()) {
+                predicates = criteriaBuilder.and(predicates,
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + criteria.getName().toLowerCase() + "%"));
+            }
+
+            return predicates;
+        };
     }
 }
