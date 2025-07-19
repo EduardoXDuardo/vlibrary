@@ -78,18 +78,6 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found with username: " + username));
     }
 
-    @Transactional(readOnly = true)
-    public List<ReviewResponseDTO> findAllReviewsByUserId(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
-
-        List<Review> reviews = user.getLibrary().stream()
-                .flatMap(userBook -> userBook.getReviews().stream())
-                .toList();
-
-        return reviewMapper.toDto(reviews);
-    }
-
     @Transactional
     public UserResponseDTO updateUserPassword(Long userId, UserUpdatePasswordRequestDTO request, String username) {
         User user = userRepository.findById(userId)

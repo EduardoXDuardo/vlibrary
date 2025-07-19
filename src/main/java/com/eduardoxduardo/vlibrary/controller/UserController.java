@@ -2,7 +2,6 @@ package com.eduardoxduardo.vlibrary.controller;
 
 import com.eduardoxduardo.vlibrary.dto.filter.UserSearchCriteria;
 import com.eduardoxduardo.vlibrary.dto.request.update.UserUpdatePasswordRequestDTO;
-import com.eduardoxduardo.vlibrary.dto.response.ReviewResponseDTO;
 import com.eduardoxduardo.vlibrary.dto.response.UserResponseDTO;
 import com.eduardoxduardo.vlibrary.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -45,11 +44,6 @@ public class UserController {
         UserSearchCriteria criteria = new UserSearchCriteria(username, email);
         Page<UserResponseDTO> users = userService.findUsers(criteria, page, size, sortBy, sortDirection);
         return ResponseEntity.ok(users);
-    }
-
-    @GetMapping("/{id}/reviews")
-    public ResponseEntity<List<ReviewResponseDTO>> findAllReviewsByUser(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.findAllReviewsByUserId(id));
     }
 
     @PatchMapping("/{id}/password")

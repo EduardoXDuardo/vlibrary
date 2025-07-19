@@ -98,14 +98,6 @@ public class LibraryService {
         return entries.map(userBookMapper::toDto);
     }
 
-    @Transactional(readOnly = true)
-    public List<ReviewResponseDTO> findAllReviewsByUserBookId(Long userBookId) {
-        UserBook userBook = userBookRepository.findById(userBookId)
-                .orElseThrow(() -> new EntityNotFoundException("UserBook not found with ID: " + userBookId));
-
-        return reviewMapper.toDto(userBook.getReviews());
-    }
-
     @Transactional
     public UserBookResponseDTO updateReadingStatus(Long userBookId, LibraryUpdateReadingStatusRequestDTO request, String username) {
 

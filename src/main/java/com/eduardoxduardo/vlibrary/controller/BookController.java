@@ -4,7 +4,6 @@ import com.eduardoxduardo.vlibrary.dto.filter.BookSearchCriteria;
 import com.eduardoxduardo.vlibrary.dto.request.create.BookCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.update.BookUpdateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.BookResponseDTO;
-import com.eduardoxduardo.vlibrary.dto.response.ReviewResponseDTO;
 import com.eduardoxduardo.vlibrary.service.BookService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -46,11 +45,6 @@ public class BookController {
         BookSearchCriteria criteria = new BookSearchCriteria(title, authorId, genreId);
         Page<BookResponseDTO> books = bookService.findBooks(criteria, page, size, sortBy, sortDirection);
         return ResponseEntity.ok(books);
-    }
-
-    @GetMapping("/{id}/reviews")
-    public ResponseEntity<List<ReviewResponseDTO>> getReviewsByBookId(@PathVariable Long id) {
-        return ResponseEntity.ok(bookService.findAllReviewsByBookId(id));
     }
 
     @PatchMapping("/{id}")

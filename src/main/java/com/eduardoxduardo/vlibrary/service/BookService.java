@@ -80,18 +80,6 @@ public class BookService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReviewResponseDTO> findAllReviewsByBookId(Long bookId) {
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new EntityNotFoundException("Book not found with ID: " + bookId));
-
-        List<Review> reviews = book.getUserEntries().stream()
-                .flatMap(userBook -> userBook.getReviews().stream())
-                .toList();
-
-        return reviewMapper.toDto(reviews);
-    }
-
-    @Transactional(readOnly = true)
     public List<UserResponseDTO> findAllUsersByBookId(Long bookId) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("Book not found with ID: " + bookId));
