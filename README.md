@@ -22,6 +22,8 @@ This project is currently **under development**. Authentication, genre managemen
 - PostgreSQL
 - Maven
 - Lombok
+- SpringDoc OpenAPI / Swagger UI
+- Postman
 
 ## 🏗️ Project Architecture
 
@@ -120,6 +122,24 @@ The security implementation (authentication and authorization) was developed wit
 - `GET /api/reviews/{id}` - Get a review by ID
 - `PATCH /api/reviews/{id}` - Update a review
 - `DELETE /api/reviews/{id}` - Delete a review
+
+## 📖 API Documentation with Swagger
+
+This project includes interactive API documentation generated with SpringDoc and OpenAPI 3.
+
+Once the application is running, you can access the Swagger UI at:
+`http://localhost:8080/swagger-ui/index.html`
+
+### Authorizing Requests in Swagger UI
+
+The Swagger UI is integrated with Spring Security, allowing you to test protected endpoints directly.
+
+1.  First, obtain a JWT token by executing the `POST /api/auth/login` request.
+2.  Click the **Authorize** button located at the top right of the Swagger UI page.
+3.  In the dialog that appears, paste your token into the `Value` field, making sure to prefix it with `Bearer `. For example: `Bearer eyJhbGciOiJIUzI1NiJ9...`
+4.  Click **Authorize** and then **Close**.
+
+After completing these steps, your requests will include the necessary `Authorization` header, and you will be able to interact with all protected endpoints.
 
 ## 🧪 API Testing with Postman
 
