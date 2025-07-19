@@ -3,6 +3,7 @@ package com.eduardoxduardo.vlibrary.controller;
 import com.eduardoxduardo.vlibrary.dto.request.update.ReviewUpdateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.ReviewResponseDTO;
 import com.eduardoxduardo.vlibrary.service.ReviewService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/reviews")
+@SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 public class ReviewController {
 

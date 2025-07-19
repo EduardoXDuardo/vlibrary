@@ -10,6 +10,7 @@ import com.eduardoxduardo.vlibrary.dto.response.ReviewResponseDTO;
 import com.eduardoxduardo.vlibrary.dto.response.UserBookResponseDTO;
 import com.eduardoxduardo.vlibrary.model.enums.ReadingStatus;
 import com.eduardoxduardo.vlibrary.service.LibraryService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/library")
+@SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 public class LibraryController {
 

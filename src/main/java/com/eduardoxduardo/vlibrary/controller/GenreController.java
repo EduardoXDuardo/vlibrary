@@ -5,6 +5,7 @@ import com.eduardoxduardo.vlibrary.dto.request.create.GenreCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.update.GenreUpdateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.GenreResponseDTO;
 import com.eduardoxduardo.vlibrary.service.GenreService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/genres")
+@SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 public class GenreController {
 

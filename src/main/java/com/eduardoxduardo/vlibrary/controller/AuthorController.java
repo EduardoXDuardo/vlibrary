@@ -7,6 +7,7 @@ import com.eduardoxduardo.vlibrary.dto.request.update.AuthorUpdateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.AuthorResponseDTO;
 import com.eduardoxduardo.vlibrary.model.entities.Book;
 import com.eduardoxduardo.vlibrary.service.AuthorService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/authors")
+@SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 public class AuthorController {
 
