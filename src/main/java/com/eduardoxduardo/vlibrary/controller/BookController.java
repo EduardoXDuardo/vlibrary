@@ -3,6 +3,7 @@ package com.eduardoxduardo.vlibrary.controller;
 import com.eduardoxduardo.vlibrary.dto.filter.BookSearchCriteria;
 import com.eduardoxduardo.vlibrary.dto.request.create.BookCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.update.BookUpdateRequestDTO;
+import com.eduardoxduardo.vlibrary.dto.response.BookExternalResponseDTO;
 import com.eduardoxduardo.vlibrary.dto.response.BookResponseDTO;
 import com.eduardoxduardo.vlibrary.service.BookService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -22,6 +23,7 @@ public class BookController {
 
     private final BookService bookService;
 
+    // Endpoint to create a new book manually if it does not exist in the book api
     @PostMapping
     public ResponseEntity<BookResponseDTO> createBook(@Valid @RequestBody BookCreateRequestDTO request) {
         return ResponseEntity.status(201).body(bookService.createBook(request));
@@ -56,5 +58,16 @@ public class BookController {
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/external/{apiId}")
+    public ResponseEntity<BookResponseDTO> importBookFromApi(@PathVariable String apiId) {
+        return ResponseEntity.status(201).body(bookService.findOrCreateBookFromApi(apiId));
+    }
+
+    @GetMapping("/external")
+    public ResponseEntity<List<BookExternalResponseDTO>> searchExternalBooks(@RequestParam String title) {
+        List<BookExternalResponseDTO> books = bookService.searchExternalBooksFromApi(title);
+        return ResponseEntity.ok(books);
     }
 }
