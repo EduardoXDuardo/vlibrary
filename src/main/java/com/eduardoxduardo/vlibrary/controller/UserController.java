@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -33,7 +32,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<UserResponseDTO>> findUsers(
+    public ResponseEntity<Page<UserResponseDTO>> searchUsers(
             @RequestParam(required = false) String username,
             @RequestParam(required = false) String email,
             @RequestParam(defaultValue = "0") int page,

@@ -1,6 +1,5 @@
 package com.eduardoxduardo.vlibrary.service;
 
-import com.eduardoxduardo.vlibrary.dto.filter.AuthorSearchCriteria;
 import com.eduardoxduardo.vlibrary.dto.filter.GenreSearchCriteria;
 import com.eduardoxduardo.vlibrary.dto.request.create.GenreCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.update.GenreUpdateRequestDTO;

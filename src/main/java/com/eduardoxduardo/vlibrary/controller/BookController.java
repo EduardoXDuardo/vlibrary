@@ -33,7 +33,7 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<BookResponseDTO>> findBooks(
+    public ResponseEntity<Page<BookResponseDTO>> searchBooks(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) Long authorId,
             @RequestParam(required = false) Long genreId,

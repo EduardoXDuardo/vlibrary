@@ -29,8 +29,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import org.springframework.security.access.AccessDeniedException;
-import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -88,7 +86,7 @@ public class LibraryService {
     }
 
     @Transactional(readOnly = true)
-    public Page<UserBookResponseDTO> searchLibrary(LibrarySearchCriteria criteria, int page, int size, String sortBy, String sortDirection, String username) {
+    public Page<UserBookResponseDTO> findInLibrary(LibrarySearchCriteria criteria, int page, int size, String sortBy, String sortDirection, String username) {
         Specification<UserBook> spec = createSpecification(criteria, username);
 
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);

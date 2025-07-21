@@ -4,10 +4,8 @@ import com.eduardoxduardo.vlibrary.dto.filter.BookSearchCriteria;
 import com.eduardoxduardo.vlibrary.dto.request.create.BookCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.update.BookUpdateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.BookResponseDTO;
-import com.eduardoxduardo.vlibrary.dto.response.ReviewResponseDTO;
 import com.eduardoxduardo.vlibrary.dto.response.UserResponseDTO;
 import com.eduardoxduardo.vlibrary.mapper.BookMapper;
-import com.eduardoxduardo.vlibrary.mapper.ReviewMapper;
 import com.eduardoxduardo.vlibrary.mapper.UserMapper;
 import com.eduardoxduardo.vlibrary.model.entities.*;
 import com.eduardoxduardo.vlibrary.repository.AuthorRepository;
@@ -34,7 +32,6 @@ public class BookService {
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
     private final BookMapper bookMapper;
-    private final ReviewMapper reviewMapper;
     private final UserMapper userMapper;
 
     @Transactional

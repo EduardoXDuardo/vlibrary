@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/library")
@@ -58,7 +57,7 @@ public class LibraryController {
             Principal principal
     ) {
         LibrarySearchCriteria criteria = new LibrarySearchCriteria(userId, bookTitle, authorId, genreId, rating, status);
-        Page<UserBookResponseDTO> entries = libraryService.searchLibrary(criteria, page, size, sortBy, sortDirection, principal.getName());
+        Page<UserBookResponseDTO> entries = libraryService.findInLibrary(criteria, page, size, sortBy, sortDirection, principal.getName());
         return ResponseEntity.ok(entries);
     }
 

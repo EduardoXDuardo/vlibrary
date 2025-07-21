@@ -1,6 +1,5 @@
 package com.eduardoxduardo.vlibrary.dto.request.update;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 

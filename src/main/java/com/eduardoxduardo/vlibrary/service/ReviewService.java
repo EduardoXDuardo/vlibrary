@@ -34,7 +34,7 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ReviewResponseDTO> searchReviews(ReviewSearchCriteria criteria, int page, int size, String sortBy, String sortDirection, String username) {
+    public Page<ReviewResponseDTO> findReviews(ReviewSearchCriteria criteria, int page, int size, String sortBy, String sortDirection, String username) {
         Specification<Review> spec = createSpecification(criteria, username);
 
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);

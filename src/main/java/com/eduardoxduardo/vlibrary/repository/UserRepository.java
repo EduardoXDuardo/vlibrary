@@ -1,6 +1,5 @@
 package com.eduardoxduardo.vlibrary.repository;
 
-import com.eduardoxduardo.vlibrary.model.entities.Review;
 import com.eduardoxduardo.vlibrary.model.entities.User;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.jpa.repository.JpaRepository;

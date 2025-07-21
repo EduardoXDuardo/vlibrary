@@ -27,7 +27,7 @@ public class ReviewController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ReviewResponseDTO>> searchLibrary(
+    public ResponseEntity<Page<ReviewResponseDTO>> searchReviews(
             @RequestParam(required = false) Long userId,
             @RequestParam(required = false) Long bookId,
             @RequestParam(required = false) String commentContains,
@@ -39,7 +39,7 @@ public class ReviewController {
             Principal principal
     ) {
         ReviewSearchCriteria criteria = new ReviewSearchCriteria(userId, bookId, commentContains, rating);
-        Page<ReviewResponseDTO> reviews = reviewService.searchReviews(criteria, page, size, sortBy, sortDirection, principal.getName());
+        Page<ReviewResponseDTO> reviews = reviewService.findReviews(criteria, page, size, sortBy, sortDirection, principal.getName());
         return ResponseEntity.ok(reviews);
     }
 

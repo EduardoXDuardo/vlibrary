@@ -6,7 +6,6 @@ import com.eduardoxduardo.vlibrary.dto.request.update.AuthorUpdateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.AuthorResponseDTO;
 import com.eduardoxduardo.vlibrary.model.entities.Author;
 import com.eduardoxduardo.vlibrary.mapper.AuthorMapper;
-import com.eduardoxduardo.vlibrary.model.entities.Book;
 import com.eduardoxduardo.vlibrary.repository.AuthorRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +15,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

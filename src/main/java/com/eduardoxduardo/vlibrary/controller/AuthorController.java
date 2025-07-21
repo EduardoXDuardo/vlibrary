@@ -1,21 +1,16 @@
 package com.eduardoxduardo.vlibrary.controller;
 
 import com.eduardoxduardo.vlibrary.dto.filter.AuthorSearchCriteria;
-import com.eduardoxduardo.vlibrary.dto.filter.BookSearchCriteria;
 import com.eduardoxduardo.vlibrary.dto.request.create.AuthorCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.update.AuthorUpdateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.AuthorResponseDTO;
-import com.eduardoxduardo.vlibrary.model.entities.Book;
 import com.eduardoxduardo.vlibrary.service.AuthorService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/authors")

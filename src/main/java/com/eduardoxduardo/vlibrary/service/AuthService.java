@@ -2,7 +2,6 @@ package com.eduardoxduardo.vlibrary.service;
 
 import com.eduardoxduardo.vlibrary.dto.request.LoginRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.LoginResponseDTO;
-import com.eduardoxduardo.vlibrary.model.entities.User;
 import com.eduardoxduardo.vlibrary.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
