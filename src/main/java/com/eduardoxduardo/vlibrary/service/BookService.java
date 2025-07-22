@@ -176,7 +176,7 @@ public class BookService {
         // Check if the author is provided and handle "Find or Create"
         // For now, we assume the first author is the main one
         // TODO: Handle multiple authors
-        if (externalBook.getAuthors() != null && !externalBook.getAuthors().isEmpty()) {
+        if (!externalBook.getAuthors().isEmpty()) {
             String authorName = externalBook.getAuthors().getFirst();
             Author author = authorRepository.findByName(authorName)
                     .orElseGet(() -> authorRepository.save(new Author(authorName)));
