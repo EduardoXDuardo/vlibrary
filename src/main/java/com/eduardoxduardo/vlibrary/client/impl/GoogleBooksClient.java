@@ -68,8 +68,14 @@ public class GoogleBooksClient implements BooksClient {
                 return null;
             }
             return convertToExternalDTO(item);
-        } catch (Exception e) {
-            System.err.println("Error fetching book by ID from Google API: " + e.getMessage());
+        } catch (HttpClientErrorException e) {
+            System.err.println("HTTP error while fetching book by ID from Google API: " + e.getMessage());
+            return null;
+        } catch (ResourceAccessException e) {
+            System.err.println("Connection error while accessing Google API: " + e.getMessage());
+            return null;
+        } catch (RestClientException e) {
+            System.err.println("Unexpected error while fetching book by ID from Google API: " + e.getMessage());
             return null;
         }
     }
