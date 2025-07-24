@@ -2,6 +2,7 @@ package com.eduardoxduardo.vlibrary.service;
 
 import com.eduardoxduardo.vlibrary.client.BooksClient;
 import com.eduardoxduardo.vlibrary.dto.filter.BookSearchCriteria;
+import com.eduardoxduardo.vlibrary.dto.filter.ExternalBookSearchCriteria;
 import com.eduardoxduardo.vlibrary.dto.request.create.BookCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.update.BookUpdateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.BookExternalResponseDTO;
@@ -163,8 +164,8 @@ public class BookService {
     }
 
     @Transactional(readOnly = true)
-    public List<BookExternalResponseDTO> searchExternalBooksFromApi(String title) {
-        return booksClient.searchBooksByTitle(title);
+    public List<BookExternalResponseDTO> searchExternalBooksFromApi(ExternalBookSearchCriteria criteria) {
+        return booksClient.searchBooks(criteria);
     }
 
     private Book convertToEntity(BookExternalResponseDTO externalBook) {

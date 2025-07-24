@@ -1,6 +1,7 @@
 package com.eduardoxduardo.vlibrary.controller;
 
 import com.eduardoxduardo.vlibrary.dto.filter.BookSearchCriteria;
+import com.eduardoxduardo.vlibrary.dto.filter.ExternalBookSearchCriteria;
 import com.eduardoxduardo.vlibrary.dto.request.create.BookCreateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.request.update.BookUpdateRequestDTO;
 import com.eduardoxduardo.vlibrary.dto.response.BookExternalResponseDTO;
@@ -66,8 +67,16 @@ public class BookController {
     }
 
     @GetMapping("/external")
-    public ResponseEntity<List<BookExternalResponseDTO>> searchExternalBooks(@RequestParam String title) {
-        List<BookExternalResponseDTO> books = bookService.searchExternalBooksFromApi(title);
+    public ResponseEntity<List<BookExternalResponseDTO>> searchExternalBooks(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) String publisher,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String isbn,
+            @RequestParam(required = false) String language
+    ) {
+        ExternalBookSearchCriteria criteria = new ExternalBookSearchCriteria(title, author, publisher, category, isbn, language);
+        List<BookExternalResponseDTO> books = bookService.searchExternalBooksFromApi(criteria);
         return ResponseEntity.ok(books);
     }
 }

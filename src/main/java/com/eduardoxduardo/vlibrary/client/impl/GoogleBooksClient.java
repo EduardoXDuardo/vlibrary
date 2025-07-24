@@ -3,6 +3,7 @@ package com.eduardoxduardo.vlibrary.client.impl;
 import com.eduardoxduardo.vlibrary.client.BooksClient;
 import com.eduardoxduardo.vlibrary.dto.google.GoogleApiResponse;
 import com.eduardoxduardo.vlibrary.dto.google.GoogleBookItem;
+import com.eduardoxduardo.vlibrary.dto.filter.ExternalBookSearchCriteria;
 import com.eduardoxduardo.vlibrary.dto.google.VolumeInfo;
 import com.eduardoxduardo.vlibrary.dto.response.BookExternalResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -30,30 +32,33 @@ public class GoogleBooksClient implements BooksClient {
     }
 
     @Override
-    public List<BookExternalResponseDTO> searchBooksByTitle(String title) {
-        String url = UriComponentsBuilder.fromUriString(GOOGLE_API_URL)
-                .queryParam("q", "intitle:" + title)
+    public List<BookExternalResponseDTO> searchBooks(ExternalBookSearchCriteria criteria) {
+
+        String query = buildQueryString(criteria);
+
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(GOOGLE_API_URL)
+                .queryParam("q", query)
                 .queryParam("key", apiKey)
                 .queryParam("maxResults", 10)
-                .queryParam("projection", "lite")
-                .toUriString();
+                .queryParam("projection", "lite");
 
-        try {
-            GoogleApiResponse response = restTemplate.getForObject(url, GoogleApiResponse.class);
+        if (criteria.getLanguage() != null && !criteria.getLanguage().isBlank()) {
+            uriBuilder.queryParam("langRestrict", criteria.getLanguage());
+        }
 
-            if (response == null || response.getItems() == null) {
-                return Collections.emptyList();
-            }
+        String url = uriBuilder.toUriString();
 
-            return response.getItems().stream()
-                    .filter(Objects::nonNull)
-                    .map(this::convertToExternalDTO)
-                    .collect(Collectors.toList());
+        GoogleApiResponse response = restTemplate.getForObject(url, GoogleApiResponse.class);
 
-        } catch (Exception e) {
-            System.err.println("Error fetching books from Google API: " + e.getMessage());
+        if (response == null || response.getItems() == null) {
             return Collections.emptyList();
-        }    
+        }
+
+        return response.getItems().stream()
+                .filter(Objects::nonNull)
+                .map(this::convertToExternalDTO)
+                .collect(Collectors.toList());
+
     }
 
     @Override
@@ -62,22 +67,11 @@ public class GoogleBooksClient implements BooksClient {
                 .queryParam("key", apiKey)
                 .toUriString();
 
-        try {
-            GoogleBookItem item = restTemplate.getForObject(url, GoogleBookItem.class);
-            if (item == null) {
-                return null;
-            }
-            return convertToExternalDTO(item);
-        } catch (HttpClientErrorException e) {
-            System.err.println("HTTP error while fetching book by ID from Google API: " + e.getMessage());
-            return null;
-        } catch (ResourceAccessException e) {
-            System.err.println("Connection error while accessing Google API: " + e.getMessage());
-            return null;
-        } catch (RestClientException e) {
-            System.err.println("Unexpected error while fetching book by ID from Google API: " + e.getMessage());
+        GoogleBookItem item = restTemplate.getForObject(url, GoogleBookItem.class);
+        if (item == null) {
             return null;
         }
+        return convertToExternalDTO(item);
     }
 
     private BookExternalResponseDTO convertToExternalDTO(GoogleBookItem item) {
@@ -93,5 +87,26 @@ public class GoogleBooksClient implements BooksClient {
                 info.getDescription(),
                 info.getCategories() != null ? info.getCategories() : Collections.emptyList()
         );
+    }
+
+    private String buildQueryString(ExternalBookSearchCriteria criteria) {
+        List<String> queryParts = new ArrayList<>();
+
+        if (criteria.getTitle() != null && !criteria.getTitle().isBlank()) {
+            queryParts.add("intitle:" + criteria.getTitle());
+        }
+        if (criteria.getAuthor() != null && !criteria.getAuthor().isBlank()) {
+            queryParts.add("inauthor:" + criteria.getAuthor());
+        }
+        if (criteria.getPublisher() != null && !criteria.getPublisher().isBlank()) {
+            queryParts.add("inpublisher:" + criteria.getPublisher());
+        }
+        if (criteria.getCategory() != null && !criteria.getCategory().isBlank()) {
+            queryParts.add("subject:" + criteria.getCategory());
+        }
+        if (criteria.getIsbn() != null && !criteria.getIsbn().isBlank()) {
+            queryParts.add("isbn:" + criteria.getIsbn());
+        }
+        return String.join("+", queryParts);
     }
 }
