@@ -13,7 +13,7 @@ Currently, any authenticated user can create, update, and delete authors, genres
 In the future, core catalog management (authors, genres, books) will be restricted to admins—ensuring data integrity and consistency. Regular users will only be able to select from existing entries or add books to their library by searching public book APIs, greatly improving usability and reducing manual data entry.
 ## 🚧 Project Status
 
-**Last Updated:** 2025-07-19 17:00:12 UTC
+**Last Updated:** 2025-07-24 18:40:10 UTC
 
 VLibrary is currently **under active development**.  
 The foundational features are implemented and being improved.
@@ -23,6 +23,7 @@ The foundational features are implemented and being improved.
 - **User authentication** with JWT-based security
 - **User management** (registration, password change, profile)
 - **Genre, author, and book management**
+- **Integration with Google Books API** for searching and importing books
 - **Personal library**: add books, update reading status, remove from library
 - **Review system**: users can review and rate books in their library
 - **Advanced search and filtering** for books, authors, genres, users, reviews
@@ -33,8 +34,6 @@ The foundational features are implemented and being improved.
 
 - **Role-based access control:**  
   Only admins will be able to create, update, or delete authors, genres, and books. Regular users will be limited to selecting from existing entries.
-- **Integration with public book APIs:**  
-  When users search for a book, author, or genre not found in the local database, the system will fetch data from a public API (e.g., Google Books or Open Library), and automatically create local entries when selected.
 - **Centralized API Exception Handling:**  
   Implement a global exception handler to provide consistent and informative error responses for all API endpoints, improving developer experience and maintainability.
 - **Enhanced user profile features**
@@ -66,6 +65,7 @@ VLibrary follows a standard layered architecture pattern:
 
 - **API Layer**: REST controllers for authentication endpoints
 - **Service Layer**: Business logic and security implementation
+- **Client Layer**: Communicates with external APIs (e.g., Google Books API).
 - **Data Layer**: JPA repositories and entity models
 - **Entities**: Domain models representing the database structure
 - **DTOs**: Data Transfer Objects for request/response/filter data encapsulation
@@ -75,10 +75,15 @@ The application separates domain entities from API representations using DTOs, e
 
 <details>
 <summary><b>Architecture Flow</b></summary>
+
 ```
-DTOs → Controllers → Services → Repositories → Database
-      ↑                                          |
-      +------------------------------------------+
+                        +-> Clients -> External APIs (Google Books)
+                        |                       |
+DTOs → Controllers → Services                   |
+      ↑                 |                       |      
+      |                 +-> Repositories -> Database (Local Data)
+      |                                         |
+      +-----------------------------------------+
                (Entity to DTO conversion)
 ```
 </details>
@@ -139,9 +144,15 @@ The security implementation (authentication and authorization) was developed wit
 <summary><b>📖 Book Endpoints</b></summary>
 
 - `POST /api/books` - Create a new book
+- `POST /api/books/external/{apiId}` - Import a book from the Google Books API into the local database using its unique `apiId`. If the book already exists, it is returned; otherwise, it is created.
+  - Example: `POST /api/books/import/vxB1mAEACAAJ`
 - `GET /api/books` - Search for books
   - Supports searching by title, author, and genre, as well as pagination and sorting
   - Example: `GET /api/books?title=xyz&authorId=123&genreId=456&page=0&size=10&sortBy=title&sortDirection=asc`
+- `GET /api/books/external` - Search for books in the Google Books API
+  - Supports searching by title, author, publisher, category, ISBN and language.
+  - Example: `GET /api/books/external?title=xyz&author=abc&publisher=def&category=ghi&isbn=1234567890`
+  - Note: The language parameter seems to be been ignored by the Google Books API, so it may not filter results as expected.
 - `GET /api/books/{id}` - Get book by ID
 - `PATCH /api/books/{id}` - Update a book
 - `DELETE /api/books/{id}` - Delete a book
