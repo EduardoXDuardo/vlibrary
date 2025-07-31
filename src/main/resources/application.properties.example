@@ -13,4 +13,6 @@ spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 
 app.jwt.secret=(Insert here your JWT secret password)
 
+ADMIN_DEFAULT_PASSWORD=admin123 (Insert here your admin default password)
+
 google.api.key=(Insert here your Google API key)
