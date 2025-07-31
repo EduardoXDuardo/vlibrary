@@ -26,7 +26,7 @@ public class RoleInitializer {
                 .orElseGet(() -> roleRepository.save(new Role(null, roleName, roleName + " system role", null)));
         }
 
-        // Cria o admin padrão se não existir
+        // Create the default admin if it doesn't exist
         if (userRepository.findByUsername("admin").isEmpty()) {
             Role adminRole = roleRepository.findByName("ROLE_ADMIN").orElseThrow();
             Role userRole = roleRepository.findByName("ROLE_USER").orElseThrow();
