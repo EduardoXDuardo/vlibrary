@@ -9,11 +9,9 @@
 VLibrary is a digital library management system that allows users to organize and track their personal book collections, reading progress, and reviews.  
 The platform offers a secure, modern REST API built with Java and Spring Boot, following best practices for API design, architecture, and security.
 
-Currently, any authenticated user can create, update, and delete authors, genres, and books, as well as manage their personal library and reviews.  
-In the future, core catalog management (authors, genres, books) will be restricted to admins—ensuring data integrity and consistency. Regular users will only be able to select from existing entries or add books to their library by searching public book APIs, greatly improving usability and reducing manual data entry.
 ## 🚧 Project Status
 
-**Last Updated:** 2025-07-24 18:40:10 UTC
+**Last Updated:** 2025-07-31 20:34:40 UTC
 
 VLibrary is currently **under active development**.  
 The foundational features are implemented and being improved.
@@ -32,8 +30,6 @@ The foundational features are implemented and being improved.
 
 ## 🛣️ Roadmap & Next Steps
 
-- **Role-based access control:**  
-  Only admins will be able to create, update, or delete authors, genres, and books. Regular users will be limited to selecting from existing entries.
 - **Centralized API Exception Handling:**  
   Implement a global exception handler to provide consistent and informative error responses for all API endpoints, improving developer experience and maintainability.
 - **Enhanced user profile features**
@@ -70,6 +66,7 @@ VLibrary follows a standard layered architecture pattern:
 - **Entities**: Domain models representing the database structure
 - **DTOs**: Data Transfer Objects for request/response/filter data encapsulation
 - **Security**: JWT-based authentication and authorization
+- **Role-Based Access Control**: Different user roles with specific permissions
 
 The application separates domain entities from API representations using DTOs, ensuring clean data contracts and preventing entity exposure. Spring Security provides authentication with JWT tokens, enabling stateless API access with secure endpoints.
 
@@ -103,6 +100,15 @@ The security implementation (authentication and authorization) was developed wit
 </details>
 
 ## 🔑 API Endpoints
+
+### 🔐 Role-Based Access Control
+
+The system uses role-based access control:
+- `ROLE_ADMIN`: Can create, edit, and delete authors, genres, books, and users, and assign roles to other users.
+- `ROLE_LIBRARIAN`: Can create, edit, and delete authors, genres, and books.
+- `ROLE_USER`: Can view and search data, manage their own library and reviews.
+
+When registering a new user, they automatically receive the `ROLE_USER` role. The first admin is created automatically when the system starts (username: `admin`, password: `admin123`).
 
 <details>
 <summary><b>🔑 Authentication Endpoints</b></summary>
@@ -169,6 +175,7 @@ The security implementation (authentication and authorization) was developed wit
   - Example: `GET /api/users?username=abc&email=def&page=0&size=10&sortBy=username&sortDirection=asc`
 - `GET /api/users/{id}` - Get user by ID
 - `PATCH /api/users/{id}/password` - Update the current user's password
+- `PATCH /api/users/{id}/roles` - Update a user's roles
 - `DELETE /api/users/{id}` - Delete a user
   > Note: Deleting a user will also delete all their associated reviews and library entries.
 

@@ -10,9 +10,11 @@ import com.eduardoxduardo.vlibrary.dto.response.UserResponseDTO;
 import com.eduardoxduardo.vlibrary.mapper.ReviewMapper;
 import com.eduardoxduardo.vlibrary.model.entities.Book;
 import com.eduardoxduardo.vlibrary.model.entities.Review;
+import com.eduardoxduardo.vlibrary.model.entities.Role;
 import com.eduardoxduardo.vlibrary.model.entities.User;
 import com.eduardoxduardo.vlibrary.repository.UserRepository;
 import com.eduardoxduardo.vlibrary.mapper.UserMapper;
+import com.eduardoxduardo.vlibrary.repository.RoleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.access.AccessDeniedException;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +38,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
-    private final ReviewMapper reviewMapper;
+    private final RoleRepository roleRepository;
 
     @Transactional
     public UserResponseDTO registerUser(UserRegisterRequestDTO request){
@@ -48,7 +51,12 @@ public class UserService {
                 request.getEmail(),
                 passwordEncoder.encode(request.getPassword())
         );
-        
+
+        // Assign default ROLE_USER role to new user
+        Role userRole = roleRepository.findByName("ROLE_USER")
+                .orElseThrow(() -> new EntityNotFoundException("Role not found: ROLE_USER"));
+        newUser.setRoles(Set.of(userRole));
+
         User savedUser = userRepository.save(newUser);
 
         return userMapper.toDto(savedUser);
@@ -98,6 +106,21 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         }
 
+        User updatedUser = userRepository.save(user);
+        return userMapper.toDto(updatedUser);
+    }
+
+    @Transactional
+    public UserResponseDTO updateUserRoles(Long userId, Set<String> roleNames) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+
+        Set<Role> roles = roleNames.stream()
+                .map(roleName -> roleRepository.findByName(roleName)
+                        .orElseThrow(() -> new EntityNotFoundException("Role not found: " + roleName)))
+                .collect(Collectors.toSet());
+
+        user.setRoles(roles);
         User updatedUser = userRepository.save(user);
         return userMapper.toDto(updatedUser);
     }
