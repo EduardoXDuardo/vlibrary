@@ -4,6 +4,7 @@ import com.eduardoxduardo.vlibrary.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -55,9 +56,25 @@ public class ApplicationConfig {
     }
 
     @Bean
+    @Profile({"dev", "test"})
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+    // In production, CORS should be restricted. Example:
+    @Bean
+    @Profile("prod")
+    public CorsConfigurationSource corsConfigurationSourceProd() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        // Set allowed origins for production from environment variable or fallback to a safe default
+        String allowedOrigins = System.getenv().getOrDefault("CORS_ALLOWED_ORIGINS", "https://your-production-domain.com");
+        configuration.setAllowedOrigins(List.of(allowedOrigins.split(",")));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
