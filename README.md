@@ -7,11 +7,11 @@
 ## 📚 Project Description
 
 VLibrary is a digital library management system that allows users to organize and track their personal book collections, reading progress, and reviews.  
-The platform offers a secure, modern REST API built with Java and Spring Boot, following best practices for API design, architecture, and security.
+The platform offers a secure, modern REST API built with Java and Spring Boot, following best practices for API design, architecture, security, and deployment.
 
 ## 🚧 Project Status
 
-**Last Updated:** 2025-07-31 20:34:40 UTC
+**Last Updated:** 2025-01-05
 
 VLibrary is currently **under active development**.  
 The foundational features are implemented and being improved.
@@ -19,66 +19,130 @@ The foundational features are implemented and being improved.
 ### ✅ Main Features
 
 - **User authentication** with JWT-based security
-- **User management** (registration, password change, profile)
+- **Role-based access control** (Admin, Librarian, User roles)
+- **User management** (registration, password change, profile, role assignment)
 - **Genre, author, and book management**
 - **Integration with Google Books API** for searching and importing books
 - **Personal library**: add books, update reading status, remove from library
 - **Review system**: users can review and rate books in their library
 - **Advanced search and filtering** for books, authors, genres, users, reviews
-- **Interactive API documentation** via Swagger/OpenAPI
+- **Multi-environment configuration** with Spring Profiles (dev, test, prod)
+- **Interactive API documentation** via Swagger/OpenAPI (environment-aware)
 - **Postman collection** for easy API testing
 
-## 🛣️ Roadmap & Next Steps
+## 📋 Setup & Configuration
 
-- **Centralized API Exception Handling:**  
-  Implement a global exception handler to provide consistent and informative error responses for all API endpoints, improving developer experience and maintainability.
-- **Enhanced user profile features**
-- **Security improvements and refactoring**
-- **More detailed error handling and user feedback**
-
-> For details and status of ongoing and planned features, see the [issue tracker](https://github.com/EduardoXDuardo/vlibrary/issues).
-
----
-
-## 🛠️ Technologies
-
-- Java 24
-- Spring Boot 3.5.3
-- Spring Security
-- JWT Authentication
-- Spring Data JPA
-- PostgreSQL
+### Prerequisites
+- Java 24 JDK
+- PostgreSQL (for production environment)
 - Maven
-- Lombok
-- SpringDoc OpenAPI / Swagger UI
-- Postman
+
+### Environment Profiles & Configuration Files
+
+VLibrary uses **Spring Profiles** for environment-specific configuration, ensuring security and optimal settings for each deployment stage. The following files are in `src/main/resources/`:
+
+| Profile | File | Database | Swagger UI | CORS Policy | Admin Password | JWT Secret & Google API Key | Use Case |
+|---------|------|----------|------------|-------------|----------------|----------------------------|----------|
+| **dev** | application-dev.properties | H2 in-memory | ✅ Enabled | Permissive (*) | `admin123` | Must set in file | Local development |
+| **test** | application-test.properties | H2 isolated | ✅ Enabled | Permissive (*) | `test123` | Must set in file | Automated testing |
+| **prod** | application-prod.properties | PostgreSQL | ❌ Disabled | Restricted | Via env variable | Via env variable | Production deployment |
+
+### How to Configure Each Environment
+
+<details>
+<summary><b>Development (default)</b></summary>
+
+1. Open `src/main/resources/application-dev.properties` and add:
+   ```ini
+   app.jwt.secret=dev-secret-key
+   google.api.key=dev-google-api-key
+   ```
+2. Run the project:
+   ```bash
+   mvn spring-boot:run
+   ```
+   Access: `http://localhost:8080` | Swagger UI: `http://localhost:8080/swagger-ui/index.html`
+
+</details>
+
+<details>
+<summary><b>Testing</b></summary>
+
+1. Open `src/main/resources/application-test.properties` and add:
+   ```ini
+   app.jwt.secret=dev-secret-key
+   google.api.key=dev-google-api-key
+   ```
+2. Run the tests:
+   ```bash
+   mvn test
+   ```
+
+</details>
+
+<details>
+<summary><b>Production</b></summary>
+
+1. Set the environment variables before running:
+   ```bash
+   export SPRING_PROFILES_ACTIVE=prod
+   export DB_URL=your-postgres-host:5432/vlibrary_db
+   export DB_USERNAME=your-db-username
+   export DB_PASSWORD=your-db-password
+   export ADMIN_DEFAULT_PASSWORD=your-secure-admin-password
+   export JWT_SECRET=your-production-jwt-secret
+   export GOOGLE_API_KEY=your-production-google-api-key
+   mvn spring-boot:run
+   ```
+
+</details>
+
+### Security Notes
+- **Never use dev/test values in production!**
+- Never hardcode sensitive data in production, always use environment variables.
+- CORS is automatically restricted in production (configure allowed origins in `ApplicationConfig.java`).
+- Swagger UI is disabled in production for security.
+
+## 🔧 ️Technologies
+
+- **Backend:** Java 24, Spring Boot 3.5.3
+- **Security:** Spring Security, JWT Authentication, Role-based Access Control
+- **Database:** PostgreSQL (prod), H2 (dev/test)
+- **Documentation:** SpringDoc OpenAPI, Swagger UI (environment-aware)
+- **External API:** Google Books API integration
+- **Build Tool:** Maven
+- **Code Quality:** Lombok
+- **Testing:** Postman collection
 
 ## 🏗️ Project Architecture
 
-VLibrary follows a standard layered architecture pattern:
+VLibrary follows a standard layered architecture pattern with environment-aware configuration:
 
 ### Key Components
 
-- **API Layer**: REST controllers for authentication endpoints
+- **Environment Management**: Spring Profiles for deployment flexibility
+- **Configuration Layer**: Environment-specific beans and security policies
+- **Security**: JWT-based authentication with role hierarchy
+- **API Layer**: REST controllers with role-based security annotations
 - **Service Layer**: Business logic and security implementation
-- **Client Layer**: Communicates with external APIs (e.g., Google Books API).
+- **Client Layer**: External API communication (Google Books API)
 - **Data Layer**: JPA repositories and entity models
 - **Entities**: Domain models representing the database structure
-- **DTOs**: Data Transfer Objects for request/response/filter data encapsulation
-- **Security**: JWT-based authentication and authorization
-- **Role-Based Access Control**: Different user roles with specific permissions
+- **DTOs**: Data Transfer Objects for clean API contracts
 
-The application separates domain entities from API representations using DTOs, ensuring clean data contracts and preventing entity exposure. Spring Security provides authentication with JWT tokens, enabling stateless API access with secure endpoints.
+The application separates domain entities from API representations using DTOs, ensuring clean data contracts and preventing entity exposure. Spring Security provides authentication with JWT tokens, enabling stateless API access with secure, role-based endpoints.
 
 <details>
 <summary><b>Architecture Flow</b></summary>
 
 ```
-                        +-> Clients -> External APIs (Google Books)
-                        |                       |
-DTOs → Controllers → Services                   |
-      ↑                 |                       |      
-      |                 +-> Repositories -> Database (Local Data)
+Environment-Aware Configuration (Spring Profiles)
+                    ↓
+          Security Layer (JWT + Roles)
+                    ↓
+DTOs → Controllers → Services → External APIs (Google Books)
+      ↑                 |                       |
+      |                 +-> Repositories → Database (PostgreSQL/H2)
       |                                         |
       +-----------------------------------------+
                (Entity to DTO conversion)
@@ -94,11 +158,6 @@ Below is a UML class diagram representing the main entities and their relationsh
 The diagram shows the core entities (`User`, `Book`, `Author`, `Genre`, `UserBook`, `Review`, `ReadingStatus`) and how they are related.
 </details>
 
-<details>
-<summary><b>Security Implementation Note</b></summary>
-The security implementation (authentication and authorization) was developed with the assistance of AI tools. This part of the codebase will be refactored in the future as I enhance my knowledge of Spring Security best practices.
-</details>
-
 ## 🔑 API Endpoints
 
 ### 🔐 Role-Based Access Control
@@ -108,7 +167,10 @@ The system uses role-based access control:
 - `ROLE_LIBRARIAN`: Can create, edit, and delete authors, genres, and books.
 - `ROLE_USER`: Can view and search data, manage their own library and reviews.
 
-When registering a new user, they automatically receive the `ROLE_USER` role. The first admin is created automatically when the system starts (username: `admin`, password: `admin123`).
+When registering a new user, they automatically receive the `ROLE_USER` role. The first admin is created automatically when the system starts with credentials that depend on the active profile:
+- **Development**: username: `admin`, password: `admin123`
+- **Test**: username: `admin`, password: `test123`
+- **Production**: username: `admin`, password: set via `ADMIN_DEFAULT_PASSWORD` environment variable
 
 <details>
 <summary><b>🔑 Authentication Endpoints</b></summary>
@@ -198,7 +260,7 @@ When registering a new user, they automatically receive the `ROLE_USER` role. Th
 <summary><b>⭐ Review Endpoints</b></summary>
 
 - `POST /api/library/{userBookId}/reviews` - Create a review for a book in the user's library
-  > Only the owner of the library entry can create a review. One review per userBook is allowed.
+  > Only the owner of the library entry can create a review.
 - `GET /api/reviews` - Search for reviews
   - Supports searching by user, book, comment text (`commentContains`), and rating, as well as pagination and sorting
   - Example: `GET /api/reviews?userId=123&bookId=456&commentContains=abc&rating=4&page=0&size=10&sortBy=id&sortDirection=asc`
@@ -211,21 +273,26 @@ When registering a new user, they automatically receive the `ROLE_USER` role. Th
 
 ## 📖 API Documentation with Swagger
 
-This project includes interactive API documentation generated with SpringDoc and OpenAPI 3.
+This project includes **environment-aware** interactive API documentation:
 
-Once the application is running, you can access the Swagger UI at:
-`http://localhost:8080/swagger-ui/index.html`
+| Environment | Swagger UI | Access URL |
+|-------------|------------|------------|
+| **Development** | ✅ Enabled | `http://localhost:8080/swagger-ui/index.html` |
+| **Test** | ✅ Enabled | Available during testing |
+| **Production** | ❌ Disabled | Not accessible (security) |
 
 ### Authorizing Requests in Swagger UI
 
-The Swagger UI is integrated with Spring Security, allowing you to test protected endpoints directly.
+The Swagger UI is fully integrated with Spring Security and role-based access control:
 
-1.  First, obtain a JWT token by executing the `POST /api/auth/login` request.
-2.  Click the **Authorize** button located at the top right of the Swagger UI page.
-3.  In the dialog that appears, paste your token into the `Value` field, making sure to prefix it with `Bearer `. For example: `Bearer eyJhbGciOiJIUzI1NiJ9...`
-4.  Click **Authorize** and then **Close**.
+1. **Login:** Execute `POST /api/auth/login` with valid credentials
+2. **Authorize:** Click the **Authorize** button in Swagger UI
+3. **Token:** Enter `Bearer <your-jwt-token>` in the authorization field
+4. **Test:** All endpoints now respect your user's roles and permissions
 
-After completing these steps, your requests will include the necessary `Authorization` header, and you will be able to interact with all protected endpoints.
+**Default admin credentials (dev environment):**
+- Username: `admin`
+- Password: `admin123`
 
 ## 🧪 API Testing with Postman
 
@@ -242,46 +309,15 @@ Click the button below to import the collection into your Postman application:
 3.  **Authenticate:** Run the `POST /api/auth/login` request first to get a token.
 4.  **Use the Token:** Copy the token from the login response and set it as the `Bearer Token` in the "Authorization" tab for the protected requests.
 
-## 📋 Setup Instructions
+## 🛣️ Roadmap & Next Steps
 
-### Prerequisites
-- Java 24 JDK
-- PostgreSQL
-- Maven
+- **Centralized API Exception Handling:**  
+  Implement a global exception handler to provide consistent and informative error responses for all API endpoints, improving developer experience and maintainability.
+- **Enhanced user profile features**
+- **Additional security improvements and refactoring**
+- **More detailed error handling and user feedback**
 
-### Configuration
-1. Clone the repository
-```
-git clone https://github.com/EduardoXDuardo/vlibrary.git
-```
-
-2. Create your own `application.properties` file in `src/main/resources` by copying the example file:
-```
-cp src/main/resources/application.properties.example src/main/resources/application.properties
-```
-
-3. Edit the `application.properties` file with your specific database credentials and settings. The example file provides the structure you need to follow:
-```
-# Database Configuration
-spring.datasource.url=jdbc:postgresql://localhost:5432/vlibrary
-spring.datasource.username=your_username
-spring.datasource.password=your_password
-spring.jpa.hibernate.ddl-auto=update
-
-# JWT Configuration
-app.jwt.secret=your_jwt_secret_key
-app.jwt.expiration=86400000
-```
-
-4. Build the project
-```
-mvn clean install
-```
-
-5. Run the application
-```
-mvn spring-boot:run
-```
+> For details and status of ongoing and planned features, see the [issue tracker](https://github.com/EduardoXDuardo/vlibrary/issues).
 
 ## 🤝 Contributing
 

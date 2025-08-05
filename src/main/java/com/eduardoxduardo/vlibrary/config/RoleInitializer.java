@@ -5,7 +5,6 @@ import com.eduardoxduardo.vlibrary.model.entities.User;
 import com.eduardoxduardo.vlibrary.repository.RoleRepository;
 import com.eduardoxduardo.vlibrary.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.Set;
 
 @Component
-@RequiredArgsConstructor
 public class RoleInitializer {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
@@ -24,7 +22,7 @@ public class RoleInitializer {
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.ADMIN_DEFAULT_PASSWORD = System.getenv("ADMIN_DEFAULT_PASSWORD");
+        this.ADMIN_DEFAULT_PASSWORD = adminDefaultPassword;
     }
 
     @PostConstruct
